@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS", "MiniESS\MiniESS.csproj", "{8D4D12AF-0A99-45FA-B293-3D707142C91B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS.Tests", "MiniESS.Tests\MiniESS.Tests.csproj", "{031381C7-F5A7-4325-B491-906370285A7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{8D4D12AF-0A99-45FA-B293-3D707142C91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D4D12AF-0A99-45FA-B293-3D707142C91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D4D12AF-0A99-45FA-B293-3D707142C91B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{031381C7-F5A7-4325-B491-906370285A7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{031381C7-F5A7-4325-B491-906370285A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{031381C7-F5A7-4325-B491-906370285A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{031381C7-F5A7-4325-B491-906370285A7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
