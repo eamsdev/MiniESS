@@ -4,6 +4,7 @@ using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Repository;
+using MiniESS.Serialization;
 using MiniESS.Tests.Models;
 using Xunit;
 
@@ -37,7 +38,17 @@ public class DependencyInjectionTests
     }
 
     [Fact]
-    public void CanResolveEventStoreAdaptor()
+    public void CanResolveSerializer()
+    {
+        // Act
+        var serializer = _serviceProvider.GetService(typeof(EventSerializer));
+        
+        // Assert
+        serializer.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void CanResolveEventStoreClientAdaptor()
     {
         // Act
         var client = _serviceProvider.GetService(typeof(IEventStoreClientAdaptor));

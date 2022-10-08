@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using EventStore.Client;
 using MiniESS.Repository;
 
-namespace MiniESS.Tests;
+namespace MiniESS.Tests.Models;
 
 public class FakeEventStoreClientAdaptor : IEventStoreClientAdaptor
 {
@@ -25,6 +25,7 @@ public class FakeEventStoreClientAdaptor : IEventStoreClientAdaptor
         }
         else
         {
+            _eventsMap.Add(streamName, new List<EventData>());
             _eventsMap[streamName].AddRange(newEvents); 
         }
         
