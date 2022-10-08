@@ -15,8 +15,9 @@ public class EventStoreClientAdaptor : IEventStoreClientAdaptor
         return await _client.AppendToStreamAsync(streamName, expectedRevision, events, cancellationToken: token);
     }
 
-    public EventStoreClient.ReadStreamResult ReadStreamAsync(Direction dir, string streamName, StreamPosition position, CancellationToken token)
+    public IAsyncEnumerable<ResolvedEvent> ReadStreamAsync(Direction dir, string streamName, StreamPosition position,
+        CancellationToken token)
     {
-        return _client.ReadStreamAsync(dir, streamName, position, cancellationToken: token);
+        return _client.ReadStreamAsync(dir, streamName, position, cancellationToken: token).Select(x => x);
     }
 }

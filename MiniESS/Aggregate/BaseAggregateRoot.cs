@@ -1,4 +1,5 @@
 using System.Reflection;
+using MiniESS.Events;
 
 namespace MiniESS.Aggregate;
 

@@ -6,5 +6,5 @@ public interface IAggregateRepository<TAggregateRoot, in TKey> where TAggregateR
 {
    Task PersistAsync(TAggregateRoot aggregateRoot, CancellationToken token);
 
-   Task<TAggregateRoot> GetAsync(TKey key, CancellationToken token);
+   Task<TAggregateRoot?> GetAsync(TKey key, CancellationToken token);
 }
