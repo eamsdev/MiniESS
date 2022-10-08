@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using MiniESS.Repository;
 using MiniESS.Tests.Models;
 
-namespace MiniESS.Tests;
+namespace MiniESS.Tests.Extensions;
 
 public static class DependencyInjection
 {

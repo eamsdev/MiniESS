@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Repository;
 using MiniESS.Serialization;
+using MiniESS.Tests.Extensions;
 using MiniESS.Tests.Models;
 using Xunit;
 

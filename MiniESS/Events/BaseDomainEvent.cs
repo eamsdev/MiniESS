@@ -17,7 +17,7 @@ public abstract record BaseDomainEvent<TAggregateRoot, TKey> : IDomainEvent<TKey
         RaisedTime = DateTime.UtcNow;
     }
 
-    public long AggregateVersion { get; }
-    public TKey AggregateId { get; }
-    public DateTime RaisedTime { get; }
+    public long AggregateVersion { get; private set; }
+    public TKey AggregateId { get; private set; }
+    public DateTime RaisedTime { get; private set; }
 }

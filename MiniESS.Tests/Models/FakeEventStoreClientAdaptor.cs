@@ -44,7 +44,7 @@ public class FakeEventStoreClientAdaptor : IEventStoreClientAdaptor
             eventData.EventId,
             StreamPosition.Start, // Dont Care
             Position.Start, // Dont Care
-            new Dictionary<string, string>(), // Dont Care
+            new Dictionary<string, string> { {"type", "foobar"}, {"content-type", "foobar"}, {"created", "0"}}, 
             eventData.Data,
             eventData.Metadata);
     }

@@ -11,6 +11,17 @@ public class Dummy : BaseAggregateRoot<Dummy, Guid>
 
     private Dummy(Guid id) : base(id)
     {
+        Add(new DummyEvents.DummyCreated(this));
+    }
+
+    public void SetFlag(bool flag)
+    {
+        Add(new DummyEvents.SetFlag(this, flag)); 
+    }
+
+    public void IncrementCount()
+    {
+        Add(new DummyEvents.IncrementCounter(this)); 
     }
 
     protected override void Apply(IDomainEvent<Guid> @event)
@@ -26,6 +37,11 @@ public class Dummy : BaseAggregateRoot<Dummy, Guid>
                 Flag = sf.Flag;
                 break;
         }
+    }
+
+    public static Dummy Create(Guid streamId)
+    {
+        return new Dummy(streamId);
     }
 }
 
@@ -43,7 +59,7 @@ public static class DummyEvents
     
     public record SetFlag: BaseDomainEvent<Dummy, Guid>
     {
-        public bool Flag { get; }
+        public bool Flag { get; private set; }
 
         private SetFlag()
         { }

@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
-using MiniESS.Aggregate;
 using MiniESS.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

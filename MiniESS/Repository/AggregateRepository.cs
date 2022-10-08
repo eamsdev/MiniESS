@@ -35,7 +35,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
 
     private static EventData Map(IDomainEvent<TKey> @event)
     {
-        var json = System.Text.Json.JsonSerializer.Serialize(@event);
+        var json = System.Text.Json.JsonSerializer.Serialize(@event, @event.GetType());
         var data = Encoding.UTF8.GetBytes(json);
 
         var eventType = @event.GetType();
@@ -54,7 +54,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
     private string GetStreamName(TKey aggregateKey)
         => $"{_streamBaseName}_{aggregateKey}";
     
-    public async Task<TAggregateRoot?> GetAsync(TKey key, CancellationToken token)
+    public async Task<TAggregateRoot?> LoadAsync(TKey key, CancellationToken token)
     {
         var streamName = GetStreamName(key);
         var readStreamResult = _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, token);
