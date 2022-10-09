@@ -1,4 +1,4 @@
-namespace MiniESS.Events;
+namespace MiniESS.Core.Events;
 
 public interface IDomainEvent<out TKey> 
 {

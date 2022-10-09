@@ -1,11 +1,11 @@
 using System.Reflection;
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
-using MiniESS.Aggregate;
-using MiniESS.Repository;
-using MiniESS.Serialization;
+using MiniESS.Core.Aggregate;
+using MiniESS.Core.Repository;
+using MiniESS.Core.Serialization;
 
-namespace MiniESS;
+namespace MiniESS.Core;
 
 public static class DependencyInjection
 {

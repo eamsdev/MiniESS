@@ -1,6 +1,6 @@
-using MiniESS.Aggregate;
+using MiniESS.Core.Aggregate;
 
-namespace MiniESS.Repository;
+namespace MiniESS.Core.Repository;
 
 public interface IAggregateRepository<TAggregateRoot, in TKey> where TAggregateRoot : class, IAggregateRoot<TKey>
 {

@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MiniESS\MiniESS.csproj" />
+      <ProjectReference Include="..\MiniESS.Core\MiniESS.Core.csproj" />
     </ItemGroup>
 
 </Project>

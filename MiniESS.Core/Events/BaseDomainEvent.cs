@@ -1,6 +1,6 @@
-using MiniESS.Aggregate;
+using MiniESS.Core.Aggregate;
 
-namespace MiniESS.Events;
+namespace MiniESS.Core.Events;
 
 public abstract record BaseDomainEvent<TAggregateRoot, TKey> : IDomainEvent<TKey> 
     where TAggregateRoot : IAggregateRoot<TKey>
@@ -17,7 +17,7 @@ public abstract record BaseDomainEvent<TAggregateRoot, TKey> : IDomainEvent<TKey
         RaisedTime = DateTime.UtcNow;
     }
 
-    public long AggregateVersion { get; private set; }
-    public TKey AggregateId { get; private set; }
-    public DateTime RaisedTime { get; private set; }
+    public long AggregateVersion { get; init; }
+    public TKey AggregateId { get; init; }
+    public DateTime RaisedTime { get; init; }
 }

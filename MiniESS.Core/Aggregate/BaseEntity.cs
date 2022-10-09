@@ -1,4 +1,4 @@
-namespace MiniESS.Aggregate;
+namespace MiniESS.Core.Aggregate;
 
 public class BaseEntity<TKey> : IEntity<TKey>
 {

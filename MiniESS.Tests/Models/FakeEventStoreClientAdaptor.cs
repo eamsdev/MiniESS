@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.Client;
-using MiniESS.Repository;
+using MiniESS.Core.Repository;
 
 namespace MiniESS.Tests.Models;
 

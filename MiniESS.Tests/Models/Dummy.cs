@@ -1,6 +1,6 @@
 using System;
-using MiniESS.Aggregate;
-using MiniESS.Events;
+using MiniESS.Core.Aggregate;
+using MiniESS.Core.Events;
 
 namespace MiniESS.Tests.Models;
 
@@ -11,17 +11,17 @@ public class Dummy : BaseAggregateRoot<Dummy, Guid>
 
     private Dummy(Guid id) : base(id)
     {
-        Add(new DummyEvents.DummyCreated(this));
+        AddEvent(new DummyEvents.DummyCreated(this));
     }
 
     public void SetFlag(bool flag)
     {
-        Add(new DummyEvents.SetFlag(this, flag)); 
+        AddEvent(new DummyEvents.SetFlag(this, flag)); 
     }
 
     public void IncrementCount()
     {
-        Add(new DummyEvents.IncrementCounter(this)); 
+        AddEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
     protected override void Apply(IDomainEvent<Guid> @event)
@@ -59,7 +59,7 @@ public static class DummyEvents
     
     public record SetFlag: BaseDomainEvent<Dummy, Guid>
     {
-        public bool Flag { get; private set; }
+        public bool Flag { get; init; }
 
         private SetFlag()
         { }

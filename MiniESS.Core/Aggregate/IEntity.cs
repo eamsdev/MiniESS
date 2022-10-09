@@ -1,4 +1,4 @@
-namespace MiniESS.Aggregate;
+namespace MiniESS.Core.Aggregate;
 
 public interface IEntity<out TKey>
 {

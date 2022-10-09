@@ -1,6 +1,6 @@
-using MiniESS.Events;
+using MiniESS.Core.Events;
 
-namespace MiniESS.Aggregate;
+namespace MiniESS.Core.Aggregate;
 
 public interface IAggregateRoot<out TKey> : IEntity<TKey>
 {

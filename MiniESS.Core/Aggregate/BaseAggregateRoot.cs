@@ -1,7 +1,7 @@
 using System.Reflection;
-using MiniESS.Events;
+using MiniESS.Core.Events;
 
-namespace MiniESS.Aggregate;
+namespace MiniESS.Core.Aggregate;
 
 public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>, IAggregateRoot<TKey> where TAggregateRoot : class, IAggregateRoot<TKey>
 {
@@ -12,13 +12,13 @@ public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>
         _eventsQueue = new Queue<IDomainEvent<TKey>>();
     }
 
-    public long Version { get; private set; }
+    public long Version { get; set; }
     
     public IReadOnlyCollection<IDomainEvent<TKey>> Events => _eventsQueue.ToList();
     
     public void ClearEvents() => _eventsQueue.Clear();
 
-    protected void Add(IDomainEvent<TKey> @event)
+    protected void AddEvent(IDomainEvent<TKey> @event)
     {
         _eventsQueue.Enqueue(@event);
     
@@ -36,10 +36,14 @@ public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>
     
     static BaseAggregateRoot()
     {
-        var aggregateType = typeof(TAggregateRoot);
-        CTor = aggregateType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, new []{ typeof(TKey) }, null);
+        CTor = typeof(TAggregateRoot).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic, 
+            null, 
+            new []{ typeof(TKey) }, 
+            null);
+        
         if (null == CTor)
-            throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(TKey)}', for Aggregate of type '{aggregateType.Name}'");
+            throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(TKey)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
     }
         
     public static TAggregateRoot Create(TKey key, IEnumerable<IDomainEvent<TKey>> events)
@@ -53,7 +57,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>
         {
             foreach (var @event in domainEvents)
             {
-                baseAggregate.Add(@event);
+                baseAggregate.AddEvent(@event);
             }
         }
         

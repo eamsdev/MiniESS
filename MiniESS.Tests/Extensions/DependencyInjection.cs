@@ -1,7 +1,7 @@
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MiniESS.Repository;
+using MiniESS.Core.Repository;
 using MiniESS.Tests.Models;
 
 namespace MiniESS.Tests.Extensions;

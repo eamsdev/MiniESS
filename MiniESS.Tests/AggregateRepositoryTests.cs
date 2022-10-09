@@ -4,7 +4,8 @@ using System.Reflection;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using MiniESS.Repository;
+using MiniESS.Core;
+using MiniESS.Core.Repository;
 using MiniESS.Tests.Extensions;
 using MiniESS.Tests.Models;
 using Xunit;
@@ -68,5 +69,4 @@ public class AggregateRepositoryTests
         hydratedDummy!.Count.Should().Be(2);
         hydratedDummy.Flag.Should().BeTrue();
     }
-    
 }

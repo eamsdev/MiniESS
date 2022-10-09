@@ -1,10 +1,11 @@
 using System.Text;
 using EventStore.Client;
-using MiniESS.Aggregate;
-using MiniESS.Events;
-using MiniESS.Serialization;
+using MiniESS.Core.Aggregate;
+using MiniESS.Core.Events;
+using MiniESS.Core.Serialization;
+using Newtonsoft.Json;
 
-namespace MiniESS.Repository;
+namespace MiniESS.Core.Repository;
 
 public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TAggregateRoot, TKey> 
     where TAggregateRoot : class, IAggregateRoot<TKey>
@@ -35,7 +36,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
 
     private static EventData Map(IDomainEvent<TKey> @event)
     {
-        var json = System.Text.Json.JsonSerializer.Serialize(@event, @event.GetType());
+        var json = JsonConvert.SerializeObject(@event, @event.GetType(), null);
         var data = Encoding.UTF8.GetBytes(json);
 
         var eventType = @event.GetType();
@@ -44,7 +45,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
             EventType = eventType.AssemblyQualifiedName!
         };
 
-        var metaJson = System.Text.Json.JsonSerializer.Serialize(meta);
+        var metaJson = JsonConvert.SerializeObject(meta);
         var metaData = Encoding.UTF8.GetBytes(metaJson);
 
         var eventPayload = new EventData(Uuid.NewUuid(), eventType.Name, data, metaData);
@@ -67,7 +68,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
     
     private IDomainEvent<TKey> Map(ResolvedEvent resolvedEvent)
     {
-        var meta = System.Text.Json.JsonSerializer.Deserialize<EventMeta>(resolvedEvent.Event.Metadata.ToArray());
+        var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
         return _serializer.Deserialize<TKey>(meta.EventType, resolvedEvent.Event.Data.ToArray());
     }
     

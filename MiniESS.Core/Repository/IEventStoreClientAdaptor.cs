@@ -1,6 +1,6 @@
 using EventStore.Client;
 
-namespace MiniESS.Repository;
+namespace MiniESS.Core.Repository;
 
 public interface IEventStoreClientAdaptor
 {

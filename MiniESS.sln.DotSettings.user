@@ -1,0 +1,18 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5fc9338f_002Dafa6_002D4494_002Daa83_002D85736ee9f3e9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="DependencyInjectionTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.DependencyInjectionTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.AggregateRepositoryTests.CanPersistNewAggregate&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.AggregateRepositoryTests.CanAddAdditionEventsToAggregate&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d8adf85d_002D179b_002D4748_002D97ed_002D976d6fab3c53/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="CanResolveRepository" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.DependencyInjectionTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.AggregateRepositoryTests.CanPersistNewAggregate&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::031381C7-F5A7-4325-B491-906370285A7F::net6.0::MiniESS.Tests.AggregateRepositoryTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=de129b92_002Def72_002D446b_002Dbcb4_002Df440568e6136/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Solution /&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
