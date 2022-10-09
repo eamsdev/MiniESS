@@ -12,9 +12,9 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
 {
     private readonly string _streamBaseName;
     private readonly EventSerializer _serializer;
-    private readonly IEventStoreClientAdaptor _client;
+    private readonly IEventStoreClient _client;
 
-    public AggregateRepository(IEventStoreClientAdaptor client, EventSerializer serializer)
+    public AggregateRepository(IEventStoreClient client, EventSerializer serializer)
     {
         _client = client;
         _serializer = serializer;
@@ -74,6 +74,6 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
     
     internal struct EventMeta
     {
-        public string EventType { get; set; }
+        public string EventType { get; init; }
     }
 }

@@ -11,8 +11,8 @@ public static class DependencyInjection
     public static IServiceCollection UseStubbedEventStoreClient(this IServiceCollection services)
     {
         return services
-            .RemoveAll<IEventStoreClientAdaptor>()
+            .RemoveAll<IEventStoreClient>()
             .RemoveAll<EventStoreClient>()
-            .AddSingleton<IEventStoreClientAdaptor, FakeEventStoreClientAdaptor>();
+            .AddSingleton<IEventStoreClient, FakeEventStoreClientAdaptor>();
     }
 }

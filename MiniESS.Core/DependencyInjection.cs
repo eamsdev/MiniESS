@@ -17,7 +17,7 @@ public static class DependencyInjection
       return services
          .AddScoped(_ => new EventSerializer(config.SerializableAssemblies))
          .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
-         .AddSingleton<IEventStoreClientAdaptor, EventStoreClientAdaptor>();
+         .AddSingleton<IEventStoreClient, EventStoreClientAdaptor>();
    }
 
    public static IServiceCollection AddEventSourcingRepository<TAggregateRoot, TKey>(this IServiceCollection services) 
@@ -25,7 +25,7 @@ public static class DependencyInjection
    {
       return services.AddSingleton<IAggregateRepository<TAggregateRoot, TKey>>(sp =>
       {
-         var client = sp.GetRequiredService<IEventStoreClientAdaptor>();
+         var client = sp.GetRequiredService<IEventStoreClient>();
          var serializer = sp.GetRequiredService<EventSerializer>();
 
          return new AggregateRepository<TAggregateRoot, TKey>(client, serializer);

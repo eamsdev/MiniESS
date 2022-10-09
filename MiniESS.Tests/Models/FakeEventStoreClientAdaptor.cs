@@ -7,7 +7,7 @@ using MiniESS.Core.Repository;
 
 namespace MiniESS.Tests.Models;
 
-public class FakeEventStoreClientAdaptor : IEventStoreClientAdaptor
+public class FakeEventStoreClientAdaptor : IEventStoreClient
 {
     private readonly Dictionary<string, List<EventData>> _eventsMap;
     

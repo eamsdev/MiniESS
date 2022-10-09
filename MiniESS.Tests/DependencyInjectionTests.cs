@@ -53,7 +53,7 @@ public class DependencyInjectionTests
     public void CanResolveEventStoreClientAdaptor()
     {
         // Act
-        var client = _serviceProvider.GetService(typeof(IEventStoreClientAdaptor));
+        var client = _serviceProvider.GetService(typeof(IEventStoreClient));
         
         // Assert
         (client as FakeEventStoreClientAdaptor).Should().NotBeNull();

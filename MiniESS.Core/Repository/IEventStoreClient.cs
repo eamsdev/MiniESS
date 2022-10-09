@@ -2,7 +2,7 @@ using EventStore.Client;
 
 namespace MiniESS.Core.Repository;
 
-public interface IEventStoreClientAdaptor
+public interface IEventStoreClient
 {
     Task<IWriteResult> AppendToStreamAsync(string streamName, StreamRevision expectedRevision, IEnumerable<EventData> events, CancellationToken token);
 
