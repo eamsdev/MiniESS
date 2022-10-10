@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using EventStore.Client;
 using MiniESS.Core.Repository;
 
-namespace MiniESS.Tests.Models;
+namespace MiniESS.Core.Tests.Models;
 
 public class FakeEventStoreClientAdaptor : IEventStoreClient
 {

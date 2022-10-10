@@ -2,8 +2,8 @@ using MiniESS.Core.Aggregate;
 
 namespace MiniESS.Core.Events;
 
-public abstract record BaseDomainEvent<TAggregateRoot, TKey> : IDomainEvent<TKey> 
-    where TAggregateRoot : IAggregateRoot<TKey>
+public abstract record BaseDomainEvent<TAggregateRoot> : IDomainEvent
+    where TAggregateRoot : IAggregateRoot
 {
     protected BaseDomainEvent() { }
 
@@ -18,6 +18,6 @@ public abstract record BaseDomainEvent<TAggregateRoot, TKey> : IDomainEvent<TKey
     }
 
     public long AggregateVersion { get; init; }
-    public TKey AggregateId { get; init; }
+    public Guid AggregateId { get; init; }
     public DateTime RaisedTime { get; init; }
 }

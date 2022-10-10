@@ -7,8 +7,8 @@ using Newtonsoft.Json;
 
 namespace MiniESS.Core.Repository;
 
-public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TAggregateRoot, TKey> 
-    where TAggregateRoot : class, IAggregateRoot<TKey>
+public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggregateRoot> 
+    where TAggregateRoot : class, IAggregateRoot
 {
     private readonly string _streamBaseName;
     private readonly EventSerializer _serializer;
@@ -34,7 +34,7 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
             aggregateRoot.Events.Select(Map), token);
     }
 
-    private static EventData Map(IDomainEvent<TKey> @event)
+    private static EventData Map(IDomainEvent @event)
     {
         var json = JsonConvert.SerializeObject(@event, @event.GetType(), null);
         var data = Encoding.UTF8.GetBytes(json);
@@ -52,10 +52,10 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
         return eventPayload;
     }
 
-    private string GetStreamName(TKey aggregateKey)
+    private string GetStreamName(Guid aggregateKey)
         => $"{_streamBaseName}_{aggregateKey}";
     
-    public async Task<TAggregateRoot?> LoadAsync(TKey key, CancellationToken token)
+    public async Task<TAggregateRoot?> LoadAsync(Guid key, CancellationToken token)
     {
         var streamName = GetStreamName(key);
         var readStreamResult = _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, token);
@@ -63,12 +63,12 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
         var events = eventRecord.Select(Map).ToList();
 
         return !events.Any() 
-            ? null : BaseAggregateRoot<TAggregateRoot, TKey>.Create(key, events.OrderBy(e => e.AggregateVersion));
+            ? null : BaseAggregateRoot<TAggregateRoot>.Create(key, events.OrderBy(e => e.AggregateVersion));
     }
     
-    private IDomainEvent<TKey> Map(ResolvedEvent resolvedEvent)
+    private IDomainEvent Map(ResolvedEvent resolvedEvent)
     {
         var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
-        return _serializer.Deserialize<TKey>(meta.EventType, resolvedEvent.Event.Data.ToArray());
+        return _serializer.Deserialize(meta.EventType, resolvedEvent.Event.Data.ToArray());
     }
 }

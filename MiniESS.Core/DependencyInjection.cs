@@ -20,15 +20,15 @@ public static class DependencyInjection
          .AddSingleton<IEventStoreClient, EventStoreClientAdaptor>();
    }
 
-   public static IServiceCollection AddEventSourcingRepository<TAggregateRoot, TKey>(this IServiceCollection services) 
-      where TAggregateRoot : class, IAggregateRoot<TKey>
+   public static IServiceCollection AddEventSourcingRepository<TAggregateRoot>(this IServiceCollection services) 
+      where TAggregateRoot : class, IAggregateRoot
    {
-      return services.AddSingleton<IAggregateRepository<TAggregateRoot, TKey>>(sp =>
+      return services.AddSingleton<IAggregateRepository<TAggregateRoot>>(sp =>
       {
          var client = sp.GetRequiredService<IEventStoreClient>();
          var serializer = sp.GetRequiredService<EventSerializer>();
 
-         return new AggregateRepository<TAggregateRoot, TKey>(client, serializer);
+         return new AggregateRepository<TAggregateRoot>(client, serializer);
       });
    }
 }

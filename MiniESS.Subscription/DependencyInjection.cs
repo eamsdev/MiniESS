@@ -1,7 +1,10 @@
+using System.Reflection;
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MiniESS.Core.Events;
+using MiniESS.Core.Serialization;
 using MiniESS.Subscription.Subscriptions;
 using MiniESS.Subscription.Workers;
 
@@ -15,10 +18,12 @@ public static class DependencyInjection
     {
         var config = ConfigurationOption.Create(configureAction);
         return services
+            .AddScoped(_ => new EventSerializer(config.SerializableAssemblies))
             .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
             .AddSingleton<EventStoreSubscriber>()
             .AddTransient(sp => new EventStoreSubscribe.ToAll(
                 sp.GetRequiredService<ILogger<EventStoreSubscribe.ToAll>>(),
+                sp.GetRequiredService<EventSerializer>(),
                 sp.GetRequiredService<EventStoreSubscriber>(),
                 config.HandleAction!))
             .AddHostedService(sp =>
@@ -42,6 +47,9 @@ public class ConfigurationOption
       if (config.HandleAction is null)
          throw new InvalidOperationException("HandleAction must be defined");
       
+      if (!config.SerializableAssemblies.Any())
+         throw new InvalidOperationException("No Serializable assemblies provided");
+      
       return config;
    }
 
@@ -49,9 +57,12 @@ public class ConfigurationOption
    {
       ConnectionString = "";
       HandleAction = null;
+      SerializableAssemblies = new List<Assembly>();
    }
 
+   public List<Assembly> SerializableAssemblies { get; set; }
+   
    public string ConnectionString { get; set; }
 
-   public Action<ResolvedEvent, CancellationToken>? HandleAction { get; set; }
+   public Action<IDomainEvent, CancellationToken>? HandleAction { get; set; }
 } 

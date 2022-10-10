@@ -2,9 +2,9 @@ using System;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Events;
 
-namespace MiniESS.Tests.Models;
+namespace MiniESS.Core.Tests.Models;
 
-public class Dummy : BaseAggregateRoot<Dummy, Guid>
+public class Dummy : BaseAggregateRoot<Dummy>
 {
     public bool Flag { get; set; }
     public int Count { get; set; }
@@ -24,7 +24,7 @@ public class Dummy : BaseAggregateRoot<Dummy, Guid>
         AddEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
-    protected override void Apply(IDomainEvent<Guid> @event)
+    protected override void Apply(IDomainEvent @event)
     {
         switch (@event)
         {
@@ -47,7 +47,7 @@ public class Dummy : BaseAggregateRoot<Dummy, Guid>
 
 public static class DummyEvents
 {
-    public record DummyCreated : BaseDomainEvent<Dummy, Guid>
+    public record DummyCreated : BaseDomainEvent<Dummy>
     {
         private DummyCreated()
         { }
@@ -57,7 +57,7 @@ public static class DummyEvents
         
     }
     
-    public record SetFlag: BaseDomainEvent<Dummy, Guid>
+    public record SetFlag: BaseDomainEvent<Dummy>
     {
         public bool Flag { get; init; }
 
@@ -71,7 +71,7 @@ public static class DummyEvents
         
     }
     
-    public record IncrementCounter : BaseDomainEvent<Dummy, Guid>
+    public record IncrementCounter : BaseDomainEvent<Dummy>
     {
         private IncrementCounter()
         { }

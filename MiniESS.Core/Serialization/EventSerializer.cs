@@ -25,21 +25,21 @@ public class EventSerializer
         _typesCache = new ConcurrentDictionary<string, Type>();
     }
 
-    public IDomainEvent<TKey> Deserialize<TKey>(string type, byte[] data)
+    public IDomainEvent Deserialize(string type, byte[] data)
     {
         var jsonData = Encoding.UTF8.GetString(data);
-        return Deserialize<TKey>(type, jsonData);
+        return Deserialize(type, jsonData);
     }
 
-    private IDomainEvent<TKey> Deserialize<TKey>(string typeName, string json)
+    private IDomainEvent Deserialize(string typeName, string json)
     {
         var typeFromAssembly = GetFromAssembly(typeName);
         if (typeFromAssembly is null)
             throw new InvalidOperationException($"Unknown event type: '{typeName}'");
         
         var eventType = _typesCache.GetOrAdd(typeName, _ => typeFromAssembly);
-        return JsonConvert.DeserializeObject(json, eventType, _settings) as IDomainEvent<TKey> 
-               ?? throw new InvalidOperationException($"Event: '{typeName}' does not Implement type: '{typeof(IDomainEvent<TKey>)}'"); 
+        return JsonConvert.DeserializeObject(json, eventType, _settings) as IDomainEvent
+               ?? throw new InvalidOperationException($"Event: '{typeName}' does not Implement type: '{typeof(IDomainEvent)}'"); 
     }
 
     private Type? GetFromAssembly(string type)

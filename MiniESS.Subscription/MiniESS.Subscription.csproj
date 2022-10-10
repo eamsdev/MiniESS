@@ -16,8 +16,4 @@
       <ProjectReference Include="..\MiniESS.Core\MiniESS.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Projections" />
-    </ItemGroup>
-
 </Project>

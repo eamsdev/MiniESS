@@ -1,5 +1,4 @@
 using EventStore.Client;
-using MiniESS.Core.Repository;
 
 namespace MiniESS.Subscription.Subscriptions;
 

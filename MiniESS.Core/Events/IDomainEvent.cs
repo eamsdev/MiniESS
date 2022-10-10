@@ -1,8 +1,8 @@
 namespace MiniESS.Core.Events;
 
-public interface IDomainEvent<out TKey> 
+public interface IDomainEvent
 {
    long AggregateVersion { get; }
-   TKey AggregateId { get; }
+   Guid AggregateId { get; }
    DateTime RaisedTime { get; }
 }

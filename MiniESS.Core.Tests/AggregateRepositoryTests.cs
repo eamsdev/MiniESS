@@ -4,17 +4,16 @@ using System.Reflection;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using MiniESS.Core;
 using MiniESS.Core.Repository;
-using MiniESS.Tests.Extensions;
-using MiniESS.Tests.Models;
+using MiniESS.Core.Tests.Extensions;
+using MiniESS.Core.Tests.Models;
 using Xunit;
 
-namespace MiniESS.Tests;
+namespace MiniESS.Core.Tests;
 
 public class AggregateRepositoryTests
 {
-    private readonly IAggregateRepository<Dummy, Guid> _dummyAggregateRepository;
+    private readonly IAggregateRepository<Dummy> _dummyAggregateRepository;
 
     public AggregateRepositoryTests()
     {
@@ -24,11 +23,11 @@ public class AggregateRepositoryTests
                 option.ConnectionString = "dont care lol";
                 option.SerializableAssemblies = new List<Assembly> { typeof(Dummy).Assembly };
             })
-            .AddEventSourcingRepository<Dummy, Guid>()
+            .AddEventSourcingRepository<Dummy>()
             .UseStubbedEventStoreClient()
             .BuildServiceProvider();
 
-        _dummyAggregateRepository = serviceProvider.GetService(typeof(IAggregateRepository<Dummy, Guid>)) as IAggregateRepository<Dummy, Guid> 
+        _dummyAggregateRepository = serviceProvider.GetService(typeof(IAggregateRepository<Dummy>)) as IAggregateRepository<Dummy> 
                                     ?? throw new InvalidOperationException();
     }
 

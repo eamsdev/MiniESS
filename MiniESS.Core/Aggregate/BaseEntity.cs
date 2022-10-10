@@ -1,11 +1,11 @@
 namespace MiniESS.Core.Aggregate;
 
-public class BaseEntity<TKey> : IEntity<TKey>
+public class BaseEntity : IEntity
 {
-    protected BaseEntity(TKey id)
+    protected BaseEntity(Guid id)
     {
         StreamId = id;
     }
 
-    public TKey StreamId { get; }
+    public Guid StreamId { get; }
 }

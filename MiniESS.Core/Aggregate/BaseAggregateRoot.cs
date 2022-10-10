@@ -3,22 +3,22 @@ using MiniESS.Core.Events;
 
 namespace MiniESS.Core.Aggregate;
 
-public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>, IAggregateRoot<TKey> where TAggregateRoot : class, IAggregateRoot<TKey>
+public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregateRoot where TAggregateRoot : class, IAggregateRoot
 {
-    private readonly Queue<IDomainEvent<TKey>> _eventsQueue;
+    private readonly Queue<IDomainEvent> _eventsQueue;
 
-    protected BaseAggregateRoot(TKey id) : base(id)
+    protected BaseAggregateRoot(Guid id) : base(id)
     {
-        _eventsQueue = new Queue<IDomainEvent<TKey>>();
+        _eventsQueue = new Queue<IDomainEvent>();
     }
 
     public long Version { get; set; }
     
-    public IReadOnlyCollection<IDomainEvent<TKey>> Events => _eventsQueue.ToList();
+    public IReadOnlyCollection<IDomainEvent> Events => _eventsQueue.ToList();
     
     public void ClearEvents() => _eventsQueue.Clear();
 
-    protected void AddEvent(IDomainEvent<TKey> @event)
+    protected void AddEvent(IDomainEvent @event)
     {
         _eventsQueue.Enqueue(@event);
     
@@ -27,7 +27,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>
         Version++;
     }
 
-    protected abstract void Apply(IDomainEvent<TKey> @event);
+    protected abstract void Apply(IDomainEvent @event);
    
     /*
      *  Static constructor via reflection to allow subclasses to be created generically
@@ -39,21 +39,21 @@ public abstract class BaseAggregateRoot<TAggregateRoot, TKey> : BaseEntity<TKey>
         CTor = typeof(TAggregateRoot).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic, 
             null, 
-            new []{ typeof(TKey) }, 
+            new []{ typeof(Guid) }, 
             null);
         
         if (null == CTor)
-            throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(TKey)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
+            throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(Guid)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
     }
         
-    public static TAggregateRoot Create(TKey key, IEnumerable<IDomainEvent<TKey>> events)
+    public static TAggregateRoot Create(Guid key, IEnumerable<IDomainEvent> events)
     {
-        var domainEvents = events as IDomainEvent<TKey>[] ?? events.ToArray();
-        if (null == events || !domainEvents.Any() || CTor is null || key is null)
+        var domainEvents = events as IDomainEvent[] ?? events.ToArray();
+        if (null == events || !domainEvents.Any() || CTor is null)
             throw new ArgumentNullException();
         
         var result = (TAggregateRoot) CTor.Invoke(new object [] { key });
-        if (result is BaseAggregateRoot<TAggregateRoot, TKey> baseAggregate)
+        if (result is BaseAggregateRoot<TAggregateRoot> baseAggregate)
         {
             foreach (var @event in domainEvents)
             {

@@ -2,9 +2,9 @@ using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MiniESS.Core.Repository;
-using MiniESS.Tests.Models;
+using MiniESS.Core.Tests.Models;
 
-namespace MiniESS.Tests.Extensions;
+namespace MiniESS.Core.Tests.Extensions;
 
 public static class DependencyInjection
 {

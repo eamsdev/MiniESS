@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using MiniESS.Core;
 using MiniESS.Core.Repository;
 using MiniESS.Core.Serialization;
-using MiniESS.Tests.Extensions;
-using MiniESS.Tests.Models;
+using MiniESS.Core.Tests.Extensions;
+using MiniESS.Core.Tests.Models;
 using Xunit;
 
-namespace MiniESS.Tests;
+namespace MiniESS.Core.Tests;
 
 public class DependencyInjectionTests
 {
@@ -24,7 +22,7 @@ public class DependencyInjectionTests
                 option.ConnectionString = "dont care lol";
                 option.SerializableAssemblies = new List<Assembly> { typeof(Dummy).Assembly };
             })
-            .AddEventSourcingRepository<Dummy, Guid>()
+            .AddEventSourcingRepository<Dummy>()
             .UseStubbedEventStoreClient()
             .BuildServiceProvider();
     }
@@ -33,7 +31,7 @@ public class DependencyInjectionTests
     public void CanResolveRepository()
     {
         // Act
-        var repository = _serviceProvider.GetService(typeof(IAggregateRepository<Dummy, Guid>));
+        var repository = _serviceProvider.GetService(typeof(IAggregateRepository<Dummy>));
         
         // Assert
         repository.Should().NotBeNull();

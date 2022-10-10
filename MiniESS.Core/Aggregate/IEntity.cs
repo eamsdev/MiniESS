@@ -1,6 +1,6 @@
 namespace MiniESS.Core.Aggregate;
 
-public interface IEntity<out TKey>
+public interface IEntity
 {
-    public TKey StreamId { get; }
+    public Guid StreamId { get; }
 }
