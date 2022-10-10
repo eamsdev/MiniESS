@@ -71,9 +71,4 @@ public class AggregateRepository<TAggregateRoot, TKey> : IAggregateRepository<TA
         var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
         return _serializer.Deserialize<TKey>(meta.EventType, resolvedEvent.Event.Data.ToArray());
     }
-    
-    internal struct EventMeta
-    {
-        public string EventType { get; init; }
-    }
 }
