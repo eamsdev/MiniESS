@@ -2,7 +2,7 @@
 MiniESS is a small Event Sourcing project used to demonstrate Event Sourcing architecture via a basic Todo List application.
 
 # Motivations
-MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aims was to complete this goal with the smallest amount of code as it is practical.
+MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical.
 
 # License
 
