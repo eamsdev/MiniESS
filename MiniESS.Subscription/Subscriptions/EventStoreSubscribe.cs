@@ -3,29 +3,28 @@ using EventStore.Client;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
+using MiniESS.Subscription.Projections;
 using Newtonsoft.Json;
 
 namespace MiniESS.Subscription.Subscriptions;
 
-public class EventStoreSubscribe
+public class EventStoreSubscribeToAll
 {
-   public class ToAll
-   {
-      private readonly ILogger<ToAll> _logger;
       private readonly EventSerializer _serializer;
       private readonly IEventStoreSubscriber _subscriber;
-      private readonly Action<IDomainEvent, CancellationToken> _handleEventAction;
+      private readonly ILogger<EventStoreSubscribeToAll> _logger;
+      private readonly ProjectionOrchestrator _projectionOrchestrator;
 
-      public ToAll(
-         ILogger<ToAll> logger, 
+      public EventStoreSubscribeToAll(
          EventSerializer serializer,
          IEventStoreSubscriber subscriber,
-         Action<IDomainEvent, CancellationToken>? handleEventAction)
+         ILogger<EventStoreSubscribeToAll> logger,
+         ProjectionOrchestrator projectionOrchestrator)
       {
          _logger = logger;
          _serializer = serializer;
          _subscriber = subscriber;
-         _handleEventAction = handleEventAction;
+         _projectionOrchestrator = projectionOrchestrator;
       }
 
       // TODO: Add Checkpoint support
@@ -38,13 +37,12 @@ public class EventStoreSubscribe
             cancellationToken: token);
       }
 
-      private Task HandleEvent(
+      private async Task HandleEvent(
          StreamSubscription _,
          ResolvedEvent resolvedEvent,
          CancellationToken token)
       {
-         _handleEventAction.Invoke(Map(resolvedEvent), token);
-         return Task.CompletedTask;
+         await _projectionOrchestrator.SendToProjector(Map(resolvedEvent), token);
       }
       
       private IDomainEvent Map(ResolvedEvent resolvedEvent)
@@ -52,5 +50,4 @@ public class EventStoreSubscribe
          var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
          return _serializer.Deserialize(meta.EventType, resolvedEvent.Event.Data.ToArray());
       }
-   }
 }

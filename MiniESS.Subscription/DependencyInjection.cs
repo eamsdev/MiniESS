@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
+using MiniESS.Subscription.Projections;
 using MiniESS.Subscription.Subscriptions;
 using MiniESS.Subscription.Workers;
 
@@ -21,16 +22,18 @@ public static class DependencyInjection
             .AddScoped(_ => new EventSerializer(config.SerializableAssemblies))
             .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
             .AddSingleton<EventStoreSubscriber>()
-            .AddTransient(sp => new EventStoreSubscribe.ToAll(
-                sp.GetRequiredService<ILogger<EventStoreSubscribe.ToAll>>(),
+            .AddTransient<ProjectionOrchestrator>()
+            .AddTransient(sp => new EventStoreSubscribeToAll(
                 sp.GetRequiredService<EventSerializer>(),
                 sp.GetRequiredService<EventStoreSubscriber>(),
-                config.HandleAction!))
+                sp.GetRequiredService<ILogger<EventStoreSubscribeToAll>>(),
+                sp.GetRequiredService<ProjectionOrchestrator>())
+            )
             .AddHostedService(sp =>
             {
                 return new BackgroundWorker(
                     sp.GetRequiredService<ILogger<BackgroundService>>(),
-                    token => sp.GetRequiredService<EventStoreSubscribe.ToAll>().SubscribeToAll(token));
+                    token => sp.GetRequiredService<EventStoreSubscribeToAll>().SubscribeToAll(token));
             });
     }
 }
