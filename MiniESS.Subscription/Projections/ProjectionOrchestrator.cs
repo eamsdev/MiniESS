@@ -2,9 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
 using MiniESS.Subscription.Extensions;
-using MiniESS.Subscription.Subscriptions;
-using MoreLinq;
-using SD.Tools.BCLExtensions.CollectionsRelated;
 
 namespace MiniESS.Subscription.Projections;
 

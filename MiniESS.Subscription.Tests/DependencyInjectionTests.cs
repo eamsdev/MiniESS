@@ -1,16 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Core.Events;
-using MiniESS.Core.Tests.Extensions;
 using MiniESS.Core.Tests.Models;
 using MiniESS.Subscription.Subscriptions;
 using MiniESS.Subscription.Tests.Extensions;
-using MiniESS.Subscription.Tests.Models;
 using Xunit;
 
 namespace MiniESS.Subscription.Tests;
