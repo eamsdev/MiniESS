@@ -3,10 +3,10 @@ using EventStore.Client;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
-using MiniESS.Subscription.Projections;
+using MiniESS.Projection.Projections;
 using Newtonsoft.Json;
 
-namespace MiniESS.Subscription.Subscriptions;
+namespace MiniESS.Projection.Subscriptions;
 
 public class EventStoreSubscribeToAll
 {

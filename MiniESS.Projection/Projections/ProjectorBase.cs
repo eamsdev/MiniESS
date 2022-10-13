@@ -6,7 +6,7 @@ using MiniESS.Core.Events;
 using MoreLinq;
 using SD.Tools.Algorithmia.GeneralDataStructures;
 
-namespace MiniESS.Subscription.Projections;
+namespace MiniESS.Projection.Projections;
 
 public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
     where TAggregateRoot : class, IAggregateRoot
@@ -14,7 +14,7 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
     private readonly DbContext _context;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<ProjectorBase<TAggregateRoot>> _logger;
-    private readonly Lazy<MultiValueDictionary<Type, Func<IDomainEvent, Task>>> _projectionHandlers;
+    private readonly Lazy<MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>>> _projectionHandlers;
 
     protected ProjectorBase(
         DbContext context,
@@ -24,7 +24,7 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
         _logger = logger;
         _context = context;
         _serviceProvider = serviceProvider;
-        _projectionHandlers = new Lazy<MultiValueDictionary<Type, Func<IDomainEvent, Task>>>(CreateHandlers);
+        _projectionHandlers = new Lazy<MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>>>(CreateHandlers);
     }
     
     public DbSet<T> Repository<T>() where T : class
@@ -37,18 +37,18 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
         await _context.SaveChangesAsync();
     }
 
-    public async Task ProjectEventAsync(IDomainEvent @event)
+    public async Task ProjectEventAsync(IDomainEvent @event, CancellationToken token)
     {
         if (!_projectionHandlers.Value.TryGetValue(@event.GetType(), out var handlers)) 
             return;
         
         foreach (var handler in handlers)
-            await handler.Invoke(@event);
+            await handler.Invoke(@event, token);
     }
 
-    private MultiValueDictionary<Type, Func<IDomainEvent, Task>> CreateHandlers()
+    private MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>> CreateHandlers()
     {
-        var result = new MultiValueDictionary<Type, Func<IDomainEvent, Task>>();
+        var result = new MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>>();
         var actions = GetApplyDelegates();
         MoreEnumerable.ForEach(actions, x => result.Add(x.Type, x.Delegate));
         return result;
@@ -69,8 +69,8 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
         return methodsMatchingSignature.Select(x
             => new TypeDelegatePair(
                 x.GetParameters().Single().ParameterType,
-                ev => x.Invoke(this, new object[] { ev }) as Task ?? Task.FromException(new NullReferenceException())));
+                (ev, token) => x.Invoke(this, new object[] { ev, token }) as Task ?? Task.FromException(new NullReferenceException())));
     }
 
-    private readonly record struct TypeDelegatePair(Type Type, Func<IDomainEvent, Task> Delegate);
+    private readonly record struct TypeDelegatePair(Type Type, Func<IDomainEvent, CancellationToken, Task> Delegate);
 }

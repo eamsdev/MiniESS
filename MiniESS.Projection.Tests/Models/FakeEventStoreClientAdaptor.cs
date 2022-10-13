@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.Client;
-using MiniESS.Subscription.Subscriptions;
+using MiniESS.Projection.Subscriptions;
 
 namespace MiniESS.Subscription.Tests.Models;
 

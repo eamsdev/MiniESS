@@ -1,6 +1,6 @@
 using MiniESS.Core.Events;
 
-namespace MiniESS.Subscription.Extensions;
+namespace MiniESS.Projection.Extensions;
 
 public static class DomainEventExtensions
 {

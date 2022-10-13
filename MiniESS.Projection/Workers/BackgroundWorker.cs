@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace MiniESS.Subscription.Workers;
+namespace MiniESS.Projection.Workers;
 
 public class BackgroundWorker : BackgroundService
 {

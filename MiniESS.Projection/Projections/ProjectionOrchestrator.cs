@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
-using MiniESS.Subscription.Extensions;
+using MiniESS.Projection.Extensions;
 
-namespace MiniESS.Subscription.Projections;
+namespace MiniESS.Projection.Projections;
 
 public class ProjectionOrchestrator
 {
@@ -42,7 +42,7 @@ public class ProjectionOrchestrator
 
         foreach (var projector in projectors)
         {
-            await projector!.ProjectEventAsync(@event);
+            await projector!.ProjectEventAsync(@event, token);
         }
     }
 }

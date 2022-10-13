@@ -5,11 +5,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Serialization;
-using MiniESS.Subscription.Projections;
-using MiniESS.Subscription.Subscriptions;
-using MiniESS.Subscription.Workers;
+using MiniESS.Projection.Projections;
+using MiniESS.Projection.Subscriptions;
+using MiniESS.Projection.Workers;
 
-namespace MiniESS.Subscription;
+namespace MiniESS.Projection;
 
 public static class DependencyInjection
 {
@@ -20,12 +20,17 @@ public static class DependencyInjection
         return services.AddScoped<IProjector<TAggregateType>, TConcreteProjector>();
     }
 
-    public static IServiceCollection AddSubscriptionAction(
+    public static IServiceCollection AddProjectionService(
         this IServiceCollection services,
         Action<ConfigurationOption> configureAction)
     {
         var config = ConfigurationOption.Create(configureAction);
         return services
+            .AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddDebug();
+            })
             .AddScoped(_ => new EventSerializer(config.SerializableAssemblies))
             .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
             .AddSingleton<EventStoreSubscriber>()

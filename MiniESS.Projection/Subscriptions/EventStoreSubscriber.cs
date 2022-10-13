@@ -1,6 +1,6 @@
 using EventStore.Client;
 
-namespace MiniESS.Subscription.Subscriptions;
+namespace MiniESS.Projection.Subscriptions;
 
 public class EventStoreSubscriber : IEventStoreSubscriber
 {

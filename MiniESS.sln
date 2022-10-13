@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiniESS", "MiniESS", "{5AA4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiniESS.Example", "MiniESS.Example", "{FF3A46BF-87A8-4BC8-8231-722E5982FE2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS.Subscription", "MiniESS.Subscription\MiniESS.Subscription.csproj", "{570CF8F0-00FA-4984-A465-E7CDFC5D6C45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS.Projection", "MiniESS.Projection\MiniESS.Projection.csproj", "{570CF8F0-00FA-4984-A465-E7CDFC5D6C45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS.Subscription.Tests", "MiniESS.Subscription.Tests\MiniESS.Subscription.Tests.csproj", "{CA16EE1A-3BDD-49A1-AFAF-89C93B564860}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniESS.Projection.Tests", "MiniESS.Projection.Tests\MiniESS.Projection.Tests.csproj", "{CA16EE1A-3BDD-49A1-AFAF-89C93B564860}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

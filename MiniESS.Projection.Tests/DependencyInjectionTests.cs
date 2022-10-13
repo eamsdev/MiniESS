@@ -4,8 +4,11 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Core.Events;
 using MiniESS.Core.Tests.Models;
-using MiniESS.Subscription.Subscriptions;
+using MiniESS.Projection;
+using MiniESS.Projection.Projections;
+using MiniESS.Projection.Subscriptions;
 using MiniESS.Subscription.Tests.Extensions;
+using MiniESS.Subscription.Tests.Models;
 using Xunit;
 
 namespace MiniESS.Subscription.Tests;
@@ -13,19 +16,16 @@ namespace MiniESS.Subscription.Tests;
 public class DependencyInjectionTests
 {
     private readonly ServiceProvider _serviceProvider;
-    private readonly List<IDomainEvent> _receivedDomainEvents;
 
     public DependencyInjectionTests()
     {
-        _receivedDomainEvents = new List<IDomainEvent>();
         _serviceProvider = new ServiceCollection()
-            .AddSubscriptionAction(option =>
+            .AddProjectionService(option =>
             {
                 option.ConnectionString = "dont care lol";
-                option.HandleAction = (@event, _) => _receivedDomainEvents.Add(@event);
                 option.SerializableAssemblies = new List<Assembly> { typeof(Dummy).Assembly };
             })
-            .UseStubbedEventStoreSubscriber()
+            .UseStubbedEventStoreSubscriberAndInMemeoryDbContext()
             .BuildServiceProvider();
     }
     
@@ -36,5 +36,14 @@ public class DependencyInjectionTests
         var subscriber = _serviceProvider.GetService(typeof(IEventStoreSubscriber));
         // Assert
         subscriber.Should().NotBeNull();
+    }
+    
+    [Fact]
+    public void CanResolveOrchestrator()
+    {
+        // Act
+        var orchestrator = _serviceProvider.GetService(typeof(ProjectionOrchestrator));
+        // Assert
+        orchestrator.Should().NotBeNull();
     }
 }
