@@ -13,7 +13,7 @@ namespace MiniESS.Projection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection RegisterProjector<TAggregateType, TConcreteProjector>(this IServiceCollection services) 
+    public static IServiceCollection AddProjector<TAggregateType, TConcreteProjector>(this IServiceCollection services) 
         where TConcreteProjector : class, IProjector<TAggregateType>
         where TAggregateType : class, IAggregateRoot
     {

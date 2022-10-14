@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Tests.Models;
 using MiniESS.Projection.Projections;
@@ -14,7 +13,7 @@ public class DummyProjector :
     IProject<DummyEvents.IncrementCounter>
 {
     public DummyProjector(
-        DbContext context, 
+        DummyDbContext context, 
         IServiceProvider serviceProvider, 
         ILogger<ProjectorBase<Dummy>> logger) : base(context, serviceProvider, logger)
     {

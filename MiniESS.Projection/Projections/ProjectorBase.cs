@@ -63,12 +63,11 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
 
         var methodsMatchingSignature = availableMethods.Where(
             x => x.Name == nameof(IProject<IDomainEvent>.ProjectEvent)
-                 && x.GetParameters().SingleOrDefault() is not null
-                 && typeof(IDomainEvent).IsAssignableFrom(x.GetParameters().First().ParameterType));
+                 && typeof(IDomainEvent).IsAssignableFrom(x.GetParameters().First().ParameterType)).ToList();
 
         return methodsMatchingSignature.Select(x
             => new TypeDelegatePair(
-                x.GetParameters().Single().ParameterType,
+                x.GetParameters().First().ParameterType,
                 (ev, token) => x.Invoke(this, new object[] { ev, token }) as Task ?? Task.FromException(new NullReferenceException())));
     }
 
