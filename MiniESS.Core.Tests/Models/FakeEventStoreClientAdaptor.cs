@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,10 +16,12 @@ public class FakeEventStoreClientAdaptor : IEventStoreClient
     {
         _eventsMap = new Dictionary<string, List<EventData>>();
     }
-    
-    public async Task<IWriteResult> AppendToStreamAsync(string streamName, StreamRevision expectedRevision, IEnumerable<EventData> events, CancellationToken token)
+
+    public async Task<IWriteResult> AppendToStreamAsync(string streamName, StreamState expectedState, IEnumerable<EventData> eventData,
+        Action<EventStoreClientOperationOptions>? configureOperationOptions = null, TimeSpan? deadline = null, UserCredentials? userCredentials = null,
+        CancellationToken cancellationToken = default)
     {
-        var newEvents = events.ToList();
+        var newEvents = eventData.ToList();
         if (_eventsMap.TryGetValue(streamName, out var storedEvents))
         {
             storedEvents.AddRange(newEvents);
@@ -32,11 +35,38 @@ public class FakeEventStoreClientAdaptor : IEventStoreClient
         return await Task.FromResult(new SuccessResult());
     }
 
-    public IAsyncEnumerable<ResolvedEvent> ReadStreamAsync(Direction dir, string streamName, StreamPosition position, CancellationToken token)
+    public async Task<IWriteResult> AppendToStreamAsync(string streamName, StreamRevision expectedRevision, IEnumerable<EventData> eventData,
+        Action<EventStoreClientOperationOptions>? configureOperationOptions = null, TimeSpan? deadline = null, UserCredentials? userCredentials = null,
+        CancellationToken cancellationToken = default)
+    {
+        var newEvents = eventData.ToList();
+        if (_eventsMap.TryGetValue(streamName, out var storedEvents))
+        {
+            storedEvents.AddRange(newEvents);
+        }
+        else
+        {
+            _eventsMap.Add(streamName, new List<EventData>());
+            _eventsMap[streamName].AddRange(newEvents); 
+        }
+        
+        return await Task.FromResult(new SuccessResult());
+    }
+
+    public IAsyncEnumerable<ResolvedEvent> ReadStreamAsync(Direction direction, string streamName, StreamPosition revision,
+        long maxCount = Int64.MaxValue, bool resolveLinkTos = false, TimeSpan? deadline = null,
+        UserCredentials? userCredentials = null, CancellationToken cancellationToken = default)
     {
         return _eventsMap[streamName].Select(x => new ResolvedEvent(ToEventRecord(streamName, x), null, null)).ToAsyncEnumerable();
     }
 
+    public async Task<IWriteResult> SetStreamMetadataAsync(string streamName, StreamState expectedState, StreamMetadata metadata,
+        Action<EventStoreClientOperationOptions>? configureOperationOptions = null, TimeSpan? deadline = null, UserCredentials? userCredentials = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Task.FromResult(new SuccessResult());
+    }
+    
     private static EventRecord ToEventRecord(string streamName, EventData eventData)
     {
         return new EventRecord(

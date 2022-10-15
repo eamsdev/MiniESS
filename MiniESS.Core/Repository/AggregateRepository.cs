@@ -31,7 +31,7 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
 
         var expectedRevision = StreamRevision.FromInt64(aggregateRoot.Events.First().AggregateVersion - 1);
         await _client.AppendToStreamAsync(GetStreamName(aggregateRoot.StreamId), expectedRevision,
-            aggregateRoot.Events.Select(Map), token);
+            aggregateRoot.Events.Select(Map), cancellationToken: token);
     }
 
     private static EventData Map(IDomainEvent @event)
@@ -58,7 +58,7 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
     public async Task<TAggregateRoot?> LoadAsync(Guid key, CancellationToken token)
     {
         var streamName = GetStreamName(key);
-        var readStreamResult = _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, token);
+        var readStreamResult = _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, cancellationToken: token);
         var eventRecord = await readStreamResult.ToListAsync(token);
         var events = eventRecord.Select(Map).ToList();
 

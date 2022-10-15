@@ -35,11 +35,13 @@ public static class DependencyInjection
             .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
             .AddSingleton<EventStoreSubscriber>()
             .AddTransient<ProjectionOrchestrator>()
+            .AddScoped<SubscriptionCheckpointRepository>()
             .AddTransient(sp => new EventStoreSubscribeToAll(
                 sp.GetRequiredService<EventSerializer>(),
                 sp.GetRequiredService<EventStoreSubscriber>(),
                 sp.GetRequiredService<ILogger<EventStoreSubscribeToAll>>(),
-                sp.GetRequiredService<ProjectionOrchestrator>())
+                sp.GetRequiredService<ProjectionOrchestrator>(),
+                sp.GetRequiredService<SubscriptionCheckpointRepository>())
             )
             .AddHostedService(sp =>
             {
