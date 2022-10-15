@@ -37,7 +37,7 @@ public class ProjectionTests
     }
 
     [Fact]
-    public async Task CanProjectDummyCreatedEvent()
+    public async Task CanProjectCreationEvent()
     {
         // Arrange
         var streamId = Guid.NewGuid();
@@ -51,5 +51,24 @@ public class ProjectionTests
         // Assert
         readModel.Should().NotBeNull();
         readModel!.Count.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task CanProjectMultipleEvents()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid();
+        var dummy = Dummy.Create(streamId);
+        var @event = new DummyEvents.DummyCreated(dummy);
+        await _orchestrator.SendToProjector(@event, CancellationToken.None);
+
+        // Act
+        await _orchestrator.SendToProjector(new DummyEvents.IncrementCounter(dummy), CancellationToken.None);
+        await _orchestrator.SendToProjector(new DummyEvents.IncrementCounter(dummy), CancellationToken.None);
+        var readModel = await _dbContext.Set<DummyReadModel>().FindAsync(streamId);
+
+        // Assert
+        readModel.Should().NotBeNull();
+        readModel!.Count.Should().Be(2);
     }
 }
