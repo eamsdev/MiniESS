@@ -31,25 +31,7 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
 
         var expectedRevision = StreamRevision.FromInt64(aggregateRoot.Events.First().AggregateVersion - 1);
         await _client.AppendToStreamAsync(GetStreamName(aggregateRoot.StreamId), expectedRevision,
-            aggregateRoot.Events.Select(Map), cancellationToken: token);
-    }
-
-    private static EventData Map(IDomainEvent @event)
-    {
-        var json = JsonConvert.SerializeObject(@event, @event.GetType(), null);
-        var data = Encoding.UTF8.GetBytes(json);
-
-        var eventType = @event.GetType();
-        var meta = new EventMeta
-        {
-            EventType = eventType.AssemblyQualifiedName!
-        };
-
-        var metaJson = JsonConvert.SerializeObject(meta);
-        var metaData = Encoding.UTF8.GetBytes(metaJson);
-
-        var eventPayload = new EventData(Uuid.NewUuid(), eventType.Name, data, metaData);
-        return eventPayload;
+            aggregateRoot.Events.Select(SerializationHelper.Map), cancellationToken: token);
     }
 
     private string GetStreamName(Guid aggregateKey)

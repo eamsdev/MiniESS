@@ -1,6 +1,5 @@
 using System.Text;
 using EventStore.Client;
-using MiniESS.Core.Events;
 using MiniESS.Core.Repository;
 using MiniESS.Core.Serialization;
 using MiniESS.Projection.Events;
@@ -51,7 +50,7 @@ public class SubscriptionCheckpointRepository
             CheckPointTime = DateTime.UtcNow
         };
 
-        var eventToAppend = new[] { Map(@event) };
+        var eventToAppend = new[] { SerializationHelper.Map(@event) };
         var streamName = GetCheckpointStreamName(subscriptionId);
 
         try
@@ -76,23 +75,5 @@ public class SubscriptionCheckpointRepository
                 eventToAppend,
                 cancellationToken: cancellationToken);
         }
-    }
-
-    private static EventData Map(CheckPointStored @event)
-    {
-        var json = JsonConvert.SerializeObject(@event, @event.GetType(), null);
-        var data = Encoding.UTF8.GetBytes(json);
-
-        var eventType = @event.GetType();
-        var meta = new EventMeta
-        {
-            EventType = eventType.AssemblyQualifiedName!
-        };
-
-        var metaJson = JsonConvert.SerializeObject(meta);
-        var metaData = Encoding.UTF8.GetBytes(metaJson);
-
-        var eventPayload = new EventData(Uuid.NewUuid(), eventType.Name, data, metaData);
-        return eventPayload;
     }
 }
