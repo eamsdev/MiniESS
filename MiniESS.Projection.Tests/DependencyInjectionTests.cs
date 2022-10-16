@@ -23,7 +23,7 @@ public class DependencyInjectionTests
                 option.ConnectionString = "dont care lol";
                 option.SerializableAssemblies = new List<Assembly> { typeof(Dummy).Assembly };
             })
-            .UseStubbedEventStoreSubscriberAndInMemeoryDbContext()
+            .UseStubbedEventStoreSubscriberAndInMemoryDbContext()
             .BuildServiceProvider();
     }
     
@@ -43,5 +43,14 @@ public class DependencyInjectionTests
         var orchestrator = _serviceProvider.GetService(typeof(ProjectionOrchestrator));
         // Assert
         orchestrator.Should().NotBeNull();
+    }
+    
+    [Fact]
+    public void CanResolveSubscribeToAll()
+    {
+        // Act
+        var subscribeToAll = _serviceProvider.GetService(typeof(EventStoreSubscribeToAll));
+        // Assert
+        subscribeToAll.Should().NotBeNull();
     }
 }

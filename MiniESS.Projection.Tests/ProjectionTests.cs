@@ -28,7 +28,7 @@ public class ProjectionTests
                 option.ConnectionString = "dont care lol";
                 option.SerializableAssemblies = new List<Assembly> { typeof(Dummy).Assembly };
             })
-            .UseStubbedEventStoreSubscriberAndInMemeoryDbContext()
+            .UseStubbedEventStoreSubscriberAndInMemoryDbContext()
             .AddProjector<Dummy, DummyProjector>()
             .BuildServiceProvider();
 

@@ -38,7 +38,7 @@ public static class DependencyInjection
             .AddScoped<SubscriptionCheckpointRepository>()
             .AddTransient(sp => new EventStoreSubscribeToAll(
                 sp.GetRequiredService<EventSerializer>(),
-                sp.GetRequiredService<EventStoreSubscriber>(),
+                sp.GetRequiredService<IEventStoreSubscriber>(),
                 sp.GetRequiredService<ILogger<EventStoreSubscribeToAll>>(),
                 sp.GetRequiredService<ProjectionOrchestrator>(),
                 sp.GetRequiredService<SubscriptionCheckpointRepository>())

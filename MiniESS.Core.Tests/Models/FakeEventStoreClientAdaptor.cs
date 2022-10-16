@@ -10,17 +10,39 @@ namespace MiniESS.Core.Tests.Models;
 
 public class FakeEventStoreClientAdaptor : IEventStoreClient
 {
+    private WrongExpectedVersionException? _throwOnceException;
     private readonly Dictionary<string, List<EventData>> _eventsMap;
+    
+    public StreamState? StreamMetaDataStreamState { get; set; }
+    
+    public StreamMetadata? StreamMetaData { get; set; }
+
+    public string StreamMetaDataStreamName { get; set; }
     
     public FakeEventStoreClientAdaptor()
     {
         _eventsMap = new Dictionary<string, List<EventData>>();
     }
 
+    public void ConfigureWrongVersionExceptionOnAppend(
+        string streamName,
+        StreamRevision expectedStreamRevision,
+        StreamRevision actualStreamRevision)
+    {
+        _throwOnceException = new WrongExpectedVersionException(streamName, expectedStreamRevision, actualStreamRevision);
+    }
+
     public async Task<IWriteResult> AppendToStreamAsync(string streamName, StreamState expectedState, IEnumerable<EventData> eventData,
         Action<EventStoreClientOperationOptions>? configureOperationOptions = null, TimeSpan? deadline = null, UserCredentials? userCredentials = null,
         CancellationToken cancellationToken = default)
     {
+        if (_throwOnceException is not null)
+        {
+            var tempException = _throwOnceException;
+            _throwOnceException = null;
+            throw tempException;
+        }
+
         var newEvents = eventData.ToList();
         if (_eventsMap.TryGetValue(streamName, out var storedEvents))
         {
@@ -57,6 +79,9 @@ public class FakeEventStoreClientAdaptor : IEventStoreClient
         long maxCount = Int64.MaxValue, bool resolveLinkTos = false, TimeSpan? deadline = null,
         UserCredentials? userCredentials = null, CancellationToken cancellationToken = default)
     {
+        if (!_eventsMap.ContainsKey(streamName))
+            return new List<ResolvedEvent>().ToAsyncEnumerable();
+       
         return _eventsMap[streamName].Select(x => new ResolvedEvent(ToEventRecord(streamName, x), null, null)).ToAsyncEnumerable();
     }
 
@@ -64,9 +89,12 @@ public class FakeEventStoreClientAdaptor : IEventStoreClient
         Action<EventStoreClientOperationOptions>? configureOperationOptions = null, TimeSpan? deadline = null, UserCredentials? userCredentials = null,
         CancellationToken cancellationToken = default)
     {
+        StreamMetaDataStreamName = streamName;
+        StreamMetaDataStreamState = expectedState;
+        StreamMetaData = metadata;
         return await Task.FromResult(new SuccessResult());
     }
-    
+
     private static EventRecord ToEventRecord(string streamName, EventData eventData)
     {
         return new EventRecord(

@@ -33,7 +33,6 @@ public class EventStoreSubscribeToAll
          _projectionOrchestrator = projectionOrchestrator;
       }
 
-      // TODO: Add Checkpoint support
       public async Task SubscribeToAll(CancellationToken cancellationToken)
       {
          await Task.Yield(); // see: https://github.com/dotnet/runtime/issues/36063
