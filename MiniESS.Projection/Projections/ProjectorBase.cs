@@ -8,7 +8,7 @@ using SD.Tools.Algorithmia.GeneralDataStructures;
 
 namespace MiniESS.Projection.Projections;
 
-public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
+public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>, IUnitOfWork
     where TAggregateRoot : class, IAggregateRoot
 {
     private readonly DbContext _context;
