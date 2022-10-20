@@ -12,6 +12,9 @@ module.exports = merge(commonConfig, {
       '/weatherforecast': {
         target: 'http://localhost:5293',
       },
+      '/todo': {
+        target: 'http://localhost:5293',
+      },
     },
   },
   devtool: 'cheap-module-source-map',

@@ -40,7 +40,6 @@ export class AppStore {
 
   @action
   loginRouted() {
-    console.log('Hellow');
     this.activePage = Page.Login;
   }
 }

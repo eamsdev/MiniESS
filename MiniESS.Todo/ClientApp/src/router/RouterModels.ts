@@ -22,7 +22,7 @@ export interface RouteWithBehaviour extends Route {
 export class RouteRecord<T extends Record<string, string>> {
   name: string;
   path: string;
-  store?: RouterStore;
+  private store?: RouterStore;
 
   constructor(name: string, path: string) {
     this.name = name;
@@ -30,8 +30,12 @@ export class RouteRecord<T extends Record<string, string>> {
     this.navigate.bind(this);
   }
 
+  withStore(store: RouterStore) {
+    this.store = store;
+  }
+
   async navigate(params?: T) {
-    await this.store?.navigate(this.name, params);
+    await this.store.navigate(this.name, params);
   }
 }
 

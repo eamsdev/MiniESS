@@ -59,8 +59,7 @@ export class RouterStore {
 
   assignStores(routeLinks: RouteDictionary) {
     Object.keys(routeLinks).forEach((x) => {
-      const routeLink = routeLinks[x];
-      routeLink.store = this;
+      routeLinks[x].withStore(this);
     });
   }
 
