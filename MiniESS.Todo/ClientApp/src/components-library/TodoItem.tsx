@@ -1,13 +1,13 @@
 import { FC } from 'react';
 import { Form } from 'react-bootstrap';
 
-type CheckboxInputProps = {
+export type TodoItemProps = {
   isChecked: boolean;
   label: string;
   onChange: (value: boolean) => Promise<void>;
 };
 
-const TodoItem: FC<CheckboxInputProps> = (props: CheckboxInputProps) => {
+const TodoItem: FC<TodoItemProps> = (props: TodoItemProps) => {
   return (
     <Form.Check
       type="checkbox"

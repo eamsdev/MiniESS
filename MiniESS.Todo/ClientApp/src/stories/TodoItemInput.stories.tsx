@@ -8,12 +8,7 @@ export default {
 
 const Template: ComponentStory<typeof TodoItemInput> = (arg) => <TodoItemInput {...arg} />;
 
-export const Empty = Template.bind({});
-Empty.args = {
+export const Default = Template.bind({});
+Default.args = {
   currentValue: '',
-};
-
-export const Filled = Template.bind({});
-Filled.args = {
-  currentValue: 'foobar',
 };
