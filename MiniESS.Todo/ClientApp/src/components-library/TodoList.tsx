@@ -1,16 +1,16 @@
 import { FC } from 'react';
 import { Card } from 'react-bootstrap';
 import TodoItem, { TodoItemProps } from './TodoItem';
-import TodoItemInput, { TodoItemInputProps } from './TodoItemInput';
+import TodoItemInput from './TodoItemInput';
 
 type TodoListProps = {
   title: string;
   items: TodoItemProps[];
-  todoItemInputProps: TodoItemInputProps;
+  onSubmit: (name: string) => Promise<void>;
 };
 
 const TodoList: FC<TodoListProps> = (props: TodoListProps) => {
-  const { items, title, todoItemInputProps } = props;
+  const { items, title, onSubmit } = props;
   return (
     <Card style={{ width: '250px' }}>
       <Card.Body>
@@ -19,7 +19,8 @@ const TodoList: FC<TodoListProps> = (props: TodoListProps) => {
           items.map((item) => {
             return <TodoItem key={item.label} {...item} />;
           })}
-        <TodoItemInput onSubmit={todoItemInputProps.onSubmit} />
+        <div className="mt-3" />
+        <TodoItemInput onSubmit={onSubmit} />
       </Card.Body>
     </Card>
   );

@@ -13,7 +13,9 @@ const TodoItem: FC<TodoItemProps> = (props: TodoItemProps) => {
       type="checkbox"
       label={props.label}
       checked={props.isChecked}
-      onChange={(e) => props.onChange(e.target.checked)}
+      onChange={(e) => {
+        props.onChange(e.target.checked);
+      }}
     />
   );
 };
