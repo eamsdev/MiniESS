@@ -1,3 +1,7 @@
 .completed-label {
   color: darkgray;
 }
+
+a > svg.fa-square-check {
+  cursor: pointer;
+}
