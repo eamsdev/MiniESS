@@ -10,23 +10,23 @@ const Template: ComponentStory<typeof TodoList> = (arg) => <TodoList {...arg} />
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'FooBarTodoList',
+  title: 'Grocery List',
   items: [
     {
       isChecked: true,
-      label: 'FooItem',
+      label: 'Onions',
     },
     {
       isChecked: false,
-      label: 'BarItem',
+      label: 'Steak',
     },
     {
       isChecked: true,
-      label: 'BarfooItem',
+      label: 'Milk',
     },
     {
       isChecked: false,
-      label: 'FoobarItem',
+      label: 'Bread',
     },
   ],
 };
