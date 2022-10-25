@@ -8,14 +8,9 @@ export default {
 
 const Template: ComponentStory<typeof TodoItem> = (arg) => <TodoItem {...arg} />;
 
-export const Unchecked = Template.bind({});
-Unchecked.args = {
-  isChecked: false,
-  label: 'foobar',
-};
-
-export const Checked = Template.bind({});
-Checked.args = {
+export const Default = Template.bind({});
+Default.args = {
+  todoItemId: '2aj3f3g',
   isChecked: true,
   label: 'foobar',
 };

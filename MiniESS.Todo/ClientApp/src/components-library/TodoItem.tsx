@@ -1,22 +1,31 @@
+import { faSquareCheck, faTimesSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
-import { Form } from 'react-bootstrap';
+import { Stack } from 'react-bootstrap';
 
 export type TodoItemProps = {
+  todoItemId: string;
   isChecked: boolean;
   label: string;
-  onChange: (value: boolean) => Promise<void>;
+  onComplete: (value: string) => Promise<void>;
 };
 
 const TodoItem: FC<TodoItemProps> = (props: TodoItemProps) => {
   return (
-    <Form.Check
-      type="checkbox"
-      label={props.label}
-      checked={props.isChecked}
-      onChange={(e) => {
-        props.onChange(e.target.checked);
-      }}
-    />
+    <Stack direction="horizontal" gap={2}>
+      <span>
+        {props.isChecked ? (
+          <>{props.label}</>
+        ) : (
+          <del className="completed-label">{props.label}</del>
+        )}
+      </span>
+      {props.isChecked && (
+        <a onClick={async () => await props.onComplete(props.todoItemId)}>
+          <FontAwesomeIcon icon={faSquareCheck} />
+        </a>
+      )}
+    </Stack>
   );
 };
 
