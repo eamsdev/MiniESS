@@ -13,13 +13,13 @@ export type TodoItemProps = {
 const TodoItem: FC<TodoItemProps> = (props: TodoItemProps) => {
   return (
     <Stack direction="horizontal" gap={2}>
-      <span>
+      <>
         {props.isChecked ? (
           <>{props.label}</>
         ) : (
           <del className="completed-label">{props.label}</del>
         )}
-      </span>
+      </>
       {props.isChecked && (
         <a onClick={async () => await props.onComplete(props.todoItemId)}>
           <FontAwesomeIcon icon={faSquareCheck} />
