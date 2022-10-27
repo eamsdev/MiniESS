@@ -35,6 +35,11 @@
       <_ContentIncludedByDefault Remove="ClientApp\package.json" />
       <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MiniESS.Core\MiniESS.Core.csproj" />
+      <ProjectReference Include="..\MiniESS.Projection\MiniESS.Projection.csproj" />
+    </ItemGroup>
     
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
         <!-- Ensure Node.js is installed -->
