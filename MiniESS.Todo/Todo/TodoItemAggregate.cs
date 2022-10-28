@@ -22,7 +22,7 @@ public class TodoItemAggregate
 
     public void Complete()
     {
-        if (!IsCompleted)
+        if (IsCompleted)
         {
             throw new DomainException("Todo item has already been completed");
         }

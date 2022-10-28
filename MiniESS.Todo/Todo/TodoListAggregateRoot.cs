@@ -7,31 +7,45 @@ namespace MiniESS.Todo.Todo;
 
 public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
 {
-    public TodoListAggregateRoot(Guid id) : base(id)
+    private TodoListAggregateRoot(Guid id) : base(id)
     {
         AddEvent(new TodoListEvents.TodoListCreated(this));
     }
+    
+    public static TodoListAggregateRoot Create(Guid streamId)
+    {
+        return new TodoListAggregateRoot(streamId);
+    }
 
     public List<TodoItemAggregate> TodoItems { get; set; }
+
+    public void AddTodoItem(string description)
+    {
+        var nextId = TodoItems.Count;
+        AddEvent(new TodoListEvents.TodoItemAdded(this, nextId, description));
+    }
+    
+    public void CompleteTodoItem(int id)
+    {
+        var toBeCompleted = TodoItems.SingleOrDefault(x => x.Id == id);
+        if (toBeCompleted is null)
+            throw new DomainException("Todo item does not exist in the todo list.");
+        
+        AddEvent(new TodoListEvents.TodoItemCompleted(this, id));
+    }
 
     protected override void Apply(IDomainEvent @event)
     { 
         switch (@event)
         {
             case TodoListEvents.TodoItemAdded todoItemAdded:
-                var nextId = TodoItems.Count;
-                var toBeAdded = TodoItemAggregate.Create(nextId, todoItemAdded.Description);
-                TodoItems.Add(toBeAdded);
+                TodoItems.Add(TodoItemAggregate.Create(todoItemAdded.Id, todoItemAdded.Description));
                 break;
-            case TodoListEvents.TodoListCreated todoListCreated:
+            case TodoListEvents.TodoListCreated _:
                 TodoItems = new List<TodoItemAggregate>();
                 break;
             case TodoListEvents.TodoItemCompleted todoItemCompleted:
-                var toBeCompleted = TodoItems.SingleOrDefault(x => x.Id == todoItemCompleted.Id);
-                if (toBeCompleted is null)
-                    throw new DomainException("Todo item does not exist in the todo list.");
-
-                toBeCompleted.Complete();
+                TodoItems.Single(x => x.Id == todoItemCompleted.Id).Complete();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(@event));
@@ -51,12 +65,14 @@ public static class TodoListEvents
 
     public record TodoItemAdded : BaseDomainEvent<TodoListAggregateRoot>
     {
+        public int Id { get; }
         public string Description { get; }
 
         private TodoItemAdded() { }
 
-        public TodoItemAdded(TodoListAggregateRoot todoList, string description) : base(todoList)
+        public TodoItemAdded(TodoListAggregateRoot todoList, int id, string description) : base(todoList)
         {
+            Id = id;
             Description = description;
         }
     }
