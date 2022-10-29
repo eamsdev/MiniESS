@@ -1,16 +1,16 @@
 ﻿using MiniESS.Todo.Exceptions;
 
-namespace MiniESS.TodoExample.Todo;
+namespace MiniESS.Todo.Todo.WriteModels;
 
 public class TodoItemAggregate
 {
-    public int Id { get; }
+    public int ItemNumber { get; }
     public string Description { get; }
     public bool IsCompleted { get; private set; }
     
-    private TodoItemAggregate(int id, string description, bool isCompleted)
+    private TodoItemAggregate(int itemNumber, string description, bool isCompleted)
     {
-        Id = id;
+        ItemNumber = itemNumber;
         Description = description;
         IsCompleted = isCompleted;
     }

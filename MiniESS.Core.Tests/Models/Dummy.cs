@@ -9,7 +9,7 @@ public class Dummy : BaseAggregateRoot<Dummy>
     public bool Flag { get; set; }
     public int Count { get; set; }
 
-    private Dummy(Guid id) : base(id)
+    private Dummy(Guid streamId) : base(streamId)
     {
         AddEvent(new DummyEvents.DummyCreated(this));
     }

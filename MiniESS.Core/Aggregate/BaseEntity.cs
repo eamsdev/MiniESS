@@ -2,9 +2,9 @@ namespace MiniESS.Core.Aggregate;
 
 public class BaseEntity : IEntity
 {
-    protected BaseEntity(Guid id)
+    protected BaseEntity(Guid streamId)
     {
-        StreamId = id;
+        StreamId = streamId;
     }
 
     public Guid StreamId { get; }

@@ -7,7 +7,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
 {
     private readonly Queue<IDomainEvent> _eventsQueue;
 
-    protected BaseAggregateRoot(Guid id) : base(id)
+    protected BaseAggregateRoot(Guid streamId) : base(streamId)
     {
         _eventsQueue = new Queue<IDomainEvent>();
     }
