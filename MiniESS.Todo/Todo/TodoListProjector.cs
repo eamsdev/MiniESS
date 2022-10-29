@@ -52,8 +52,16 @@ public class TodoListProjector :
 
     public async Task ProjectEvent(TodoListEvents.TodoItemCompleted domainEvent, CancellationToken token)
     {
-        var todoItem = await Repository<TodoItem>().SingleOrDefaultAsync(x =>
-            x.TodoListId == domainEvent.AggregateId && x.ItemNumber == domainEvent.ItemNumber, cancellationToken: token);
+        var todoList = await Repository<TodoList>()
+            .Include(x => x.TodoItems)
+            .Where(x => x.Id == domainEvent.AggregateId)
+            .SingleOrDefaultAsync(cancellationToken: token);
+        
+        if (todoList is null)
+            throw new NotFoundException($"todoList with aggregate id {domainEvent.AggregateId} is not found");
+        
+        var todoItem = todoList.TodoItems.SingleOrDefault(x =>
+            x.TodoListId == domainEvent.AggregateId && x.ItemNumber == domainEvent.ItemNumber);
         
         if (todoItem is null)
             throw new NotFoundException($"todoItem with todoList foreign key id {domainEvent.AggregateId} is not found");
