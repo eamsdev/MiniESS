@@ -1,6 +1,5 @@
  using FluentAssertions;
  using MiniESS.Todo.Exceptions;
- using MiniESS.Todo.Todo;
  using MiniESS.Todo.Todo.WriteModels;
 
  namespace MiniESS.Todo.Tests;

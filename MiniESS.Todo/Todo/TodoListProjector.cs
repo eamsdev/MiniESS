@@ -13,7 +13,7 @@ public class TodoListProjector :
     IProject<TodoListEvents.TodoItemCompleted>
 {
     public TodoListProjector(
-        DbContext context, 
+        TodoDbContext context, 
         IServiceProvider serviceProvider, 
         ILogger<ProjectorBase<TodoListAggregateRoot>> logger) : base(context, serviceProvider, logger)
     {
