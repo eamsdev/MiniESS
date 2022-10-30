@@ -1,11 +1,13 @@
 using System.Text;
 using EventStore.Client;
+using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
 using MiniESS.Projection.Projections;
 using MiniESS.Projection.Events;
 using Newtonsoft.Json;
+using Polly;
 
 namespace MiniESS.Projection.Subscriptions;
 
@@ -33,16 +35,30 @@ public class EventStoreSubscribeToAll
          _projectionOrchestrator = projectionOrchestrator;
       }
 
-      public async Task SubscribeToAll(CancellationToken cancellationToken)
+      private async Task<ulong?> LoadCheckpoint(CancellationToken cancellationToken)
       {
-         await Task.Yield(); // see: https://github.com/dotnet/runtime/issues/36063
-
-         var checkpoint = await _checkpointRepository.Load(SubscriptionId, cancellationToken);
+         ulong? checkpoint = null;
+         var retryCheckpointLoadPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(new[]
+         {
+            TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15)
+         }, (exception, timeSpan) => {
+            _logger.LogWarning("Attempted to subscribe to EventStoreDB, failed due to {}, after {} seconds", exception.ToString(), timeSpan.TotalSeconds);  
+         });
+         
+         await retryCheckpointLoadPolicy.ExecuteAsync(async () => checkpoint = await _checkpointRepository.Load(SubscriptionId, cancellationToken));
+         
          if (checkpoint is null)
             _logger.LogInformation("Checkpoint not found, subscribing from the start of the stream");
          else
             _logger.LogInformation("Checkpoint found at position: {}, subscribing from after this position", checkpoint.Value);
-         
+
+         return checkpoint;
+      }
+
+      public async Task SubscribeToAll(CancellationToken cancellationToken)
+      {
+         await Task.Yield(); // see: https://github.com/dotnet/runtime/issues/36063
+         var checkpoint = await LoadCheckpoint(cancellationToken);
 
          await _subscriber.SubscribeToAllAsync(
             checkpoint is null ? FromAll.Start : FromAll.After(new Position(checkpoint.Value, checkpoint.Value)), 

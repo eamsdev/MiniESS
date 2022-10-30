@@ -12,6 +12,7 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
       <PackageReference Include="morelinq" Version="3.3.2" />
+      <PackageReference Include="Polly" Version="7.2.3" />
       <PackageReference Include="SD.Tools.Algorithmia" Version="1.4.0" />
     </ItemGroup>
 
