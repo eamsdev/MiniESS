@@ -15,7 +15,7 @@ public static class DependencyInjection
    {
       var config = ConfigurationOption.Create(configureAction);
       return services
-         .AddScoped(_ => new EventSerializer(config.SerializableAssemblies))
+         .AddSingleton(_ => new EventSerializer(config.SerializableAssemblies))
          .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
          .AddSingleton<IEventStoreClient, EventStoreClientAdaptor>();
    }

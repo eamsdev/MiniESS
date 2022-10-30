@@ -24,7 +24,7 @@ builder.Services.AddProjectionService(option =>
     option.ConnectionString = eventStoreDbConnStr;
     option.SerializableAssemblies = eventStoreSerializationAssemblies;
 });
-builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("EventStoreDb")));
+builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MiniEssDb")));
 builder.Services.AddProjector<TodoListAggregateRoot, TodoListProjector>();
 
 
