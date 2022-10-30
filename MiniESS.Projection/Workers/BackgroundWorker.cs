@@ -8,7 +8,7 @@ public class BackgroundWorker : BackgroundService
     private readonly ILogger<BackgroundService> _logger;
     private readonly Func<CancellationToken, Task> _task;
 
-    public BackgroundWorker(ILogger<BackgroundService> logger, Func<CancellationToken, Task> task)
+    public BackgroundWorker(ILogger<BackgroundWorker> logger, Func<CancellationToken, Task> task)
     {
         _task = task;
         _logger = logger;

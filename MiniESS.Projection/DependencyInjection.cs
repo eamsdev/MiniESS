@@ -46,7 +46,7 @@ public static class DependencyInjection
             .AddHostedService(sp =>
             {
                 return new BackgroundWorker(
-                    sp.GetRequiredService<ILogger<BackgroundService>>(),
+                    sp.GetRequiredService<ILogger<BackgroundWorker>>(),
                     token => sp.GetRequiredService<EventStoreSubscribeToAll>().SubscribeToAll(token));
             });
     }
