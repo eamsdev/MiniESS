@@ -35,6 +35,26 @@ public class EventStoreSubscribeToAll
          _projectionOrchestrator = projectionOrchestrator;
       }
 
+      public async Task SubscribeToAll(CancellationToken cancellationToken)
+      {
+         await Task.Yield(); // see: https://github.com/dotnet/runtime/issues/36063
+         var checkpoint = await LoadCheckpoint(cancellationToken);
+
+         if (checkpoint is null)
+            _logger.LogInformation("Checkpoint not found, subscribing from the start of the stream");
+         else
+            _logger.LogInformation("Checkpoint found at position: {}, subscribing from after this position", checkpoint.Value);
+         
+         await _subscriber.SubscribeToAllAsync(
+            checkpoint is null ? FromAll.Start : FromAll.After(new Position(checkpoint.Value, checkpoint.Value)), 
+            HandleEvent,
+            subscriptionDropped: (subscription, reason, _) 
+               => _logger.LogError("Subscription {}, has been dropped due to {}", 
+                  subscription.SubscriptionId, 
+                  reason.ToString()),
+            cancellationToken: cancellationToken);
+      }
+
       private async Task<ulong?> LoadCheckpoint(CancellationToken cancellationToken)
       {
          ulong? checkpoint = null;
@@ -46,28 +66,7 @@ public class EventStoreSubscribeToAll
          });
          
          await retryCheckpointLoadPolicy.ExecuteAsync(async () => checkpoint = await _checkpointRepository.Load(SubscriptionId, cancellationToken));
-         
-         if (checkpoint is null)
-            _logger.LogInformation("Checkpoint not found, subscribing from the start of the stream");
-         else
-            _logger.LogInformation("Checkpoint found at position: {}, subscribing from after this position", checkpoint.Value);
-
          return checkpoint;
-      }
-
-      public async Task SubscribeToAll(CancellationToken cancellationToken)
-      {
-         await Task.Yield(); // see: https://github.com/dotnet/runtime/issues/36063
-         var checkpoint = await LoadCheckpoint(cancellationToken);
-
-         await _subscriber.SubscribeToAllAsync(
-            checkpoint is null ? FromAll.Start : FromAll.After(new Position(checkpoint.Value, checkpoint.Value)), 
-            HandleEvent,
-            subscriptionDropped: (subscription, reason, _) 
-               => _logger.LogError("Subscription {}, has been dropped due to {}.", 
-                  subscription.SubscriptionId, 
-                  reason.ToString()),
-            cancellationToken: cancellationToken);
       }
 
       private async Task HandleEvent(
