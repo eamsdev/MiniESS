@@ -1,8 +1,15 @@
 version: "1"
 services:
-    miniEssEventStoreDb:
+    webapp:
+        image: miniess
+        container_name: miniess
+        ports:
+            - '8090:80'
+        networks:
+            - miniess-net
+    esdb:
         image: eventstore/eventstore:21.10.1-buster-slim
-        container_name: miniEssEventStoreDb
+        container_name: docker_esdb 
         environment:
             - EVENTSTORE_CLUSTER_SIZE=1
             - EVENTSTORE_RUN_PROJECTIONS=All
@@ -12,12 +19,18 @@ services:
             - EVENTSTORE_INSECURE=true
             - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
             - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
-        ports:
-            - '1113:1113'
-            - '2113:2113'
         networks:
-            - miniEssNet
+            - miniess-net
+    
+    sqlserver:
+        image: "mcr.microsoft.com/mssql/server"
+        container_name: docker_sqlserver
+        environment:
+            SA_PASSWORD: "password_123"
+            ACCEPT_EULA: "Y"
+        networks:
+            - miniess-net
 
 networks:
-    miniEssNet:
+    miniess-net:
         driver: bridge
