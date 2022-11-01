@@ -75,14 +75,14 @@ public class FakeEventStoreClientAdaptor : IEventStoreClient
         return await Task.FromResult(new SuccessResult());
     }
 
-    public IAsyncEnumerable<ResolvedEvent> ReadStreamAsync(Direction direction, string streamName, StreamPosition revision,
+    public async Task<List<ResolvedEvent>> ReadStreamAsync(Direction direction, string streamName, StreamPosition revision,
         long maxCount = Int64.MaxValue, bool resolveLinkTos = false, TimeSpan? deadline = null,
         UserCredentials? userCredentials = null, CancellationToken cancellationToken = default)
     {
         if (!_eventsMap.ContainsKey(streamName))
-            return new List<ResolvedEvent>().ToAsyncEnumerable();
-       
-        return _eventsMap[streamName].Select(x => new ResolvedEvent(ToEventRecord(streamName, x), null, null)).ToAsyncEnumerable();
+            return new List<ResolvedEvent>();
+        
+        return _eventsMap[streamName].Select(x => new ResolvedEvent(ToEventRecord(streamName, x), null, null)).ToList();
     }
 
     public async Task<IWriteResult> SetStreamMetadataAsync(string streamName, StreamState expectedState, StreamMetadata metadata,

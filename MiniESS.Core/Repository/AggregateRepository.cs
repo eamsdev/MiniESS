@@ -40,8 +40,7 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
     public async Task<TAggregateRoot?> LoadAsync(Guid key, CancellationToken token)
     {
         var streamName = GetStreamName(key);
-        var readStreamResult = _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, cancellationToken: token);
-        var eventRecord = await readStreamResult.ToListAsync(token);
+        var eventRecord = await _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, cancellationToken: token);
         var events = eventRecord.Select(Map).ToList();
 
         return !events.Any() 

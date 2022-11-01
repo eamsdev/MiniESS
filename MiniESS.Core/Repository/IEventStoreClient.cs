@@ -22,7 +22,7 @@ public interface IEventStoreClient
         UserCredentials? userCredentials = null,
         CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<ResolvedEvent> ReadStreamAsync(
+    Task<List<ResolvedEvent>> ReadStreamAsync(
         Direction direction,
         string streamName,
         StreamPosition revision,

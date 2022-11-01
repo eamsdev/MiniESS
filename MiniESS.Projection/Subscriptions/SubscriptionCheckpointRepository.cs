@@ -31,7 +31,7 @@ public class SubscriptionCheckpointRepository
             streamName, 
             StreamPosition.End, 
             1, 
-            cancellationToken: token).ToListAsync(cancellationToken: token);
+            cancellationToken: token);
 
         if (!result.Any())
             return null;
