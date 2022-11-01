@@ -24,10 +24,10 @@ RUN dotnet restore "MiniESS.Core/MiniESS.Core.csproj"
 RUN dotnet restore "MiniESS.Projection/MiniESS.Projection.csproj"
 COPY . .
 WORKDIR "/src/MiniESS.Todo"
-RUN dotnet build "MiniESS.Todo.csproj" -c Debug
+RUN dotnet build "MiniESS.Todo.csproj" -c Release
 
 FROM build AS publish
-RUN dotnet publish "MiniESS.Todo.csproj" -c Debug -o /app/publish
+RUN dotnet publish "MiniESS.Todo.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
