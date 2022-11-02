@@ -1,13 +1,5 @@
 version: "1"
 services:
-    webapp:
-        build: .
-        image: eamsdev/miniess
-        container_name: miniess
-        ports:
-            - '8090:80'
-        networks:
-            - miniess-net
     esdb:
         image: eventstore/eventstore:21.10.1-buster-slim
         container_name: docker_esdb 
