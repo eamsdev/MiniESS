@@ -1,17 +1,22 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MiniESS.Todo.Exceptions;
 using MiniESS.Todo.Todo.ReadModels;
 
 namespace MiniESS.Todo.Todo;
 
-public static class GetTodo
+public static class GetTodoList
 {
     public class QueryModel : IRequest<ViewModel>
-    { }
+    {
+        public Guid Id { get; private init; }
+
+        public static QueryModel FromId(Guid id) => new QueryModel { Id = id };
+    }
 
     public class ViewModel
     {
-        public List<TodoListViewModel> TodoLists { get; init; }
+        public TodoListViewModel TodoList { get; init; }
     }
 
     public class Handler : IRequestHandler<QueryModel, ViewModel>
@@ -25,21 +30,24 @@ public static class GetTodo
         
         public async Task<ViewModel> Handle(QueryModel request, CancellationToken cancellationToken)
         {
-            var todoLists = await _readDb.Set<TodoList>().ToListAsync(cancellationToken: cancellationToken);
+            var todoList = await _readDb.Set<TodoList>().SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
+            if (todoList is null)
+                throw new NotFoundException($"TodoList with id {request.Id} does not exist");
+            
             return new ViewModel
             {
-                TodoLists = todoLists.Select(x => new TodoListViewModel
+                TodoList = new TodoListViewModel
                 {
-                    StreamId = x.Id,
-                    Title = x.Title,
-                    TodoItems = x.TodoItems.Select(y => new TodoItemViewModel
+                    StreamId = todoList.Id,
+                    Title = todoList.Title,
+                    TodoItems = todoList.TodoItems.Select(y => new TodoItemViewModel
                     {
                         Id = y.Id,
                         Description = y.Description,
                         IsCompleted = y.IsComplete,
                         Order = y.ItemNumber
                     }).ToList()
-                }).ToList()
+                }
             };
         }
     }
