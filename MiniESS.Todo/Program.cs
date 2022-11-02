@@ -1,9 +1,11 @@
 using System.Reflection;
+using Hellang.Middleware.ProblemDetails;
+using Hellang.Middleware.ProblemDetails.Mvc;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MiniESS.Core;
 using MiniESS.Projection;
 using MiniESS.Todo.Configuration;
-using MiniESS.Todo.Todo;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
@@ -14,6 +16,18 @@ var eventStoreDbConnStr = builder.Configuration.GetConnectionString("EventStoreD
 var eventStoreSerializationAssemblies = new List<Assembly> { typeof(TodoListAggregateRoot).Assembly };
 builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerDocument();
+builder.Services.AddSingleton<DbContext, TodoDbContext>();
+builder.Services.AddSingleton(sp =>
+{
+    using var scope = sp.CreateScope();
+    var todoDbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+    return new ReadonlyDbContext(todoDbContext);
+});
+builder.Services.AddProblemDetails()
+    .AddControllers()
+    .AddProblemDetailsConventions()
+    .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
+builder.Services.AddMediatR(typeof(TodoItemAggregate).GetTypeInfo().Assembly);
 builder.Services.AddEventSourcing(option =>
 {
     option.ConnectionString = eventStoreDbConnStr;
@@ -35,6 +49,10 @@ if (!app.Environment.IsDevelopment())
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    app.UseHttpLogging();
 }
 
 app.UseStaticFiles();

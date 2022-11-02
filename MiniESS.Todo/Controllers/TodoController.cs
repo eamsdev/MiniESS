@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using MiniESS.Todo.Todo;
 
 namespace MiniESS.Todo.Controllers;
 
@@ -6,16 +8,18 @@ namespace MiniESS.Todo.Controllers;
 [Route("[controller]")]
 public class TodoController : ControllerBase
 {
+    private readonly IMediator _mediator;
     private readonly ILogger<TodoController> _logger;
 
-    public TodoController(ILogger<TodoController> logger)
+    public TodoController(ILogger<TodoController> logger, IMediator mediator)
     {
         _logger = logger;
+        _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IEnumerable<int>> Get()
+    public async Task<GetTodo.ViewModel> Get(GetTodo.QueryModel queryModel)
     {
-        throw new NotImplementedException();
+        return await _mediator.Send(queryModel);
     }
 }

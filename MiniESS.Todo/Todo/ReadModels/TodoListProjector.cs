@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MiniESS.Projection.Projections;
 using MiniESS.Todo.Exceptions;
-using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
-namespace MiniESS.Todo.Todo;
+namespace MiniESS.Todo.Todo.ReadModels;
 
 public class TodoListProjector :
     ProjectorBase<TodoListAggregateRoot>,
@@ -15,7 +14,7 @@ public class TodoListProjector :
     public TodoListProjector(
         TodoDbContext context, 
         IServiceProvider serviceProvider, 
-        ILogger<ProjectorBase<TodoListAggregateRoot>> logger) : base(context, serviceProvider, logger)
+        ILogger<TodoListProjector> logger) : base(context, serviceProvider, logger)
     {
     }
 

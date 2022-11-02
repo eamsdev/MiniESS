@@ -10,6 +10,23 @@
 
 
 
+export interface ViewModel {
+    TodoLists: TodoListViewModel[];
+}
+
+export interface TodoListViewModel {
+    StreamId: string;
+    Title: string;
+    TodoItems: TodoItemViewModel[];
+}
+
+export interface TodoItemViewModel {
+    Id: number;
+    Order: number;
+    IsCompleted: boolean;
+    Description: string;
+}
+
 export interface WeatherForecast {
     Date: Date;
     TemperatureC: number;
