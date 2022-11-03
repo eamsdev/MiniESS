@@ -27,6 +27,10 @@ export interface TodoItemViewModel {
     Description: string;
 }
 
+export interface ViewModel2 {
+    TodoList: TodoListViewModel;
+}
+
 export interface WeatherForecast {
     Date: Date;
     TemperatureC: number;

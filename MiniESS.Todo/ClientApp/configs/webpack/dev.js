@@ -10,10 +10,10 @@ module.exports = merge(commonConfig, {
     historyApiFallback: true, // fixes error 404-ish errors when using react router :see this SO question: https://stackoverflow.com/questions/43209666/react-router-v4-cannot-get-url
     proxy: {
       '/weatherforecast': {
-        target: 'http://localhost:5293',
+        target: 'http://localhost:61746',
       },
       '/todo': {
-        target: 'http://localhost:5293',
+        target: 'http://localhost:61746',
       },
     },
   },

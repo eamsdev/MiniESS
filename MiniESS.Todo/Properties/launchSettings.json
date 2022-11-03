@@ -3,15 +3,14 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:61746",
-      "sslPort": 44335
+      "applicationUrl": "http://localhost:61746"
     }
   },
   "profiles": {
     "MiniESS.Todo": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5293",
+      "applicationUrl": "http://localhost:61746",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"

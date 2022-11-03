@@ -18,9 +18,9 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetTodoLists.ViewModel>> GetTodos([FromBody] GetTodoLists.QueryModel queryModel)
+    public async Task<ActionResult<GetTodoLists.ViewModel>> GetTodos()
     {
-        return await _mediator.Send(queryModel);
+        return await _mediator.Send(new GetTodoLists.QueryModel());
     }
     
     [HttpGet]

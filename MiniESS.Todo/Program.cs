@@ -16,13 +16,8 @@ var eventStoreDbConnStr = builder.Configuration.GetConnectionString("EventStoreD
 var eventStoreSerializationAssemblies = new List<Assembly> { typeof(TodoListAggregateRoot).Assembly };
 builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerDocument();
-builder.Services.AddSingleton<DbContext, TodoDbContext>();
-builder.Services.AddSingleton(sp =>
-{
-    using var scope = sp.CreateScope();
-    var todoDbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
-    return new ReadonlyDbContext(todoDbContext);
-});
+builder.Services.AddTransient(sp => new ReadonlyDbContext(sp.GetRequiredService<TodoDbContext>()));
+
 builder.Services.AddProblemDetails()
     .AddControllers()
     .AddProblemDetailsConventions()
@@ -69,3 +64,7 @@ app.MapControllerRoute(
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+public partial class Program
+{
+}
