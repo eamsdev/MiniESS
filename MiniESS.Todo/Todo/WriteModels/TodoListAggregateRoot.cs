@@ -63,7 +63,7 @@ public static class TodoListEvents
 {
     public record TodoListCreated : BaseDomainEvent<TodoListAggregateRoot>
     {
-        public string Title { get; }
+        public string Title { get; set; } // TODO: Add support for de-serialization without setter 
 
         private TodoListCreated() { }
 
@@ -75,7 +75,7 @@ public static class TodoListEvents
 
     public record TodoItemAdded : BaseDomainEvent<TodoListAggregateRoot>
     {
-        public int ItemNumber { get; }
+        public int ItemNumber { get; set; }
         public string Description { get; }
 
         private TodoItemAdded() { }
@@ -89,7 +89,7 @@ public static class TodoListEvents
     
     public record TodoItemCompleted : BaseDomainEvent<TodoListAggregateRoot>
     {
-        public int ItemNumber { get; }
+        public int ItemNumber { get; set; }
 
         private TodoItemCompleted() { }
 

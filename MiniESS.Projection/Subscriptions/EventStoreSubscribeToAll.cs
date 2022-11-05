@@ -80,13 +80,7 @@ public class EventStoreSubscribeToAll
             return;
          }
 
-         await _projectionOrchestrator.SendToProjector(Map(resolvedEvent), cancellationToken);
+         await _projectionOrchestrator.SendToProjector(_serializer.Map(resolvedEvent), cancellationToken);
          await _checkpointRepository.Store(SubscriptionId, resolvedEvent.Event.Position.CommitPosition, cancellationToken: cancellationToken);
-      }
-      
-      private IDomainEvent Map(ResolvedEvent resolvedEvent)
-      {
-         var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
-         return _serializer.Deserialize(meta.EventType, resolvedEvent.Event.Data.ToArray());
       }
 }

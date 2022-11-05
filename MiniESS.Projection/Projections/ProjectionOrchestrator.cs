@@ -27,22 +27,14 @@ public class ProjectionOrchestrator
             return;
         }
 
+        using var scope = _serviceProvider.CreateScope();
         var projectorsType = typeof(IProjector<>).MakeGenericType(aggregateType);
-        var projectors = _serviceProvider
-            .GetServices(projectorsType)
-            .Where(x => x is not null)
-            .Cast<IProjector>()
-            .ToList();
-
-        if (!projectors.Any())
+        if (scope.ServiceProvider.GetService(projectorsType) is not IProjector projector)
         {
             _logger.LogWarning("Domain event of type {} is dropped, no projector found.", @event.GetType().FullName);
             return;
         }
 
-        foreach (var projector in projectors)
-        {
-            await projector!.ProjectEventAsync(@event, token);
-        }
+        await projector.ProjectEventAsync(@event, token);
     }
 }

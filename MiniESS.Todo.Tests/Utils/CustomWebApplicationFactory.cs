@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MiniESS.Core.Repository;
 using MiniESS.Projection.Workers;
 using MiniESS.Todo.Todo.ReadModels;
 
@@ -24,6 +25,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 options.EnableDetailedErrors();
                 options.EnableSensitiveDataLogging();
             });
+            services.Remove(services.Single(d => d.ServiceType == typeof(IEventStoreClient)));
+            services.AddSingleton<IEventStoreClient, EventStoreBypassClient>();
 
             using var scope = services.BuildServiceProvider().CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TodoDbContext>();

@@ -41,15 +41,9 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
     {
         var streamName = GetStreamName(key);
         var eventRecord = await _client.ReadStreamAsync(Direction.Forwards, streamName, StreamPosition.Start, cancellationToken: token);
-        var events = eventRecord.Select(Map).ToList();
+        var events = eventRecord.Select(x => _serializer.Map(x)).ToList();
 
         return !events.Any() 
             ? null : BaseAggregateRoot<TAggregateRoot>.Create(key, events.OrderBy(e => e.AggregateVersion));
-    }
-    
-    private IDomainEvent Map(ResolvedEvent resolvedEvent)
-    {
-        var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
-        return _serializer.Deserialize(meta.EventType, resolvedEvent.Event.Data.ToArray());
     }
 }

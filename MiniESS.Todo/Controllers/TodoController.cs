@@ -18,15 +18,21 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetTodoLists.ViewModel>> GetTodos()
+    public async Task<ActionResult<GetTodoLists.ViewModel>> GetTodoLists()
+    {
+        return await _mediator.Send(new GetTodoLists.QueryModel());
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<GetTodoLists.ViewModel>> AddTodoList()
     {
         return await _mediator.Send(new GetTodoLists.QueryModel());
     }
     
     [HttpGet]
     [Route("{todoId:guid}")]
-    public async Task<ActionResult<GetTodoList.ViewModel>> GetTodo(Guid todoId)
+    public async Task<ActionResult<GetTodoList.ViewModel>> GetTodoList(Guid todoId)
     {
-        return await _mediator.Send(GetTodoList.QueryModel.FromId(todoId));
+        return await _mediator.Send(Todo.GetTodoList.QueryModel.FromId(todoId));
     }
 }

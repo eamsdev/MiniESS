@@ -18,7 +18,6 @@ public class TodoListAggregateTests
         // Assert
         todoList.TodoItems.Should().BeEmpty();
         todoList.Title.Should().Be(Title);
-
     }
     
     [Fact]

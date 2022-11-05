@@ -17,7 +17,7 @@ var eventStoreSerializationAssemblies = new List<Assembly> { typeof(TodoListAggr
 builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerDocument();
 builder.Services.AddTransient(sp => new ReadonlyDbContext(sp.GetRequiredService<TodoDbContext>()));
-
+builder.Services.AddEventSourcingRepository<TodoListAggregateRoot>();
 builder.Services.AddProblemDetails()
     .AddControllers()
     .AddProblemDetailsConventions()

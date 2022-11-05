@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using EventStore.Client;
 using MiniESS.Core.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -25,7 +26,19 @@ public class EventSerializer
         _typesCache = new ConcurrentDictionary<string, Type>();
     }
 
-    public IDomainEvent Deserialize(string type, byte[] data)
+    public IDomainEvent Map(ResolvedEvent resolvedEvent)
+    {
+        var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata.ToArray()));
+        return Deserialize(meta.EventType, resolvedEvent.Event.Data.ToArray());
+    }
+    
+    public IDomainEvent Map(EventData eventData)
+    {
+        var meta = JsonConvert.DeserializeObject<EventMeta>(Encoding.UTF8.GetString(eventData.Metadata.ToArray()));
+        return Deserialize(meta.EventType, eventData.Data.ToArray());
+    }
+
+    private IDomainEvent Deserialize(string type, byte[] data)
     {
         var jsonData = Encoding.UTF8.GetString(data);
         return Deserialize(type, jsonData);

@@ -1,6 +1,8 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using MiniESS.Todo.Tests.Extensions;
 using MiniESS.Todo.Tests.Utils;
+using MiniESS.Todo.Todo;
 
 namespace MiniESS.Todo.Tests;
 
@@ -20,10 +22,11 @@ public class QueryTests : IClassFixture<CustomWebApplicationFactory>
         
         // Act
         var response = await _client.GetRouteAsync("Todo");
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.DeserializeContentAsync<GetTodoLists.ViewModel>();
 
         // Assert
         response.EnsureSuccessStatusCode();
-
+        responseContent.Should().NotBeNull();
+        responseContent.TodoLists.Should().BeEmpty();
     }
 }
