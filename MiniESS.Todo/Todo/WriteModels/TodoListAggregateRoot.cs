@@ -12,6 +12,9 @@ public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
 
     private TodoListAggregateRoot(Guid streamId, string title) : base(streamId)
     {
+        if (title.Length == 0)
+            throw new DomainException("Title cannot be null or empty for a Todo List");
+        
         AddEvent(new TodoListEvents.TodoListCreated(this, title));
     }
 

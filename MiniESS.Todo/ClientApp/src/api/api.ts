@@ -10,7 +10,7 @@
 
 
 
-export interface ViewModel {
+export interface GetTodoListsViewModel {
     TodoLists: TodoListViewModel[];
 }
 
@@ -27,7 +27,15 @@ export interface TodoItemViewModel {
     Description: string;
 }
 
-export interface ViewModel2 {
+export interface AddTodoListResponseModel {
+    CreatedTodoListId: string;
+}
+
+export interface AddTodoListInputModel {
+    Title: string;
+}
+
+export interface GetTodoListViewModel {
     TodoList: TodoListViewModel;
 }
 

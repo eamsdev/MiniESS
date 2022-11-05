@@ -6,45 +6,48 @@ using MiniESS.Todo.Todo.WriteModels;
 
 namespace MiniESS.Todo.Todo;
 
-public static class GetTodoLists
+public class GetTodoListsQueryModel : IRequest<GetTodoListsViewModel>
+{ }
+
+public class GetTodoListsViewModel
 {
-    public class QueryModel : IRequest<ViewModel>
-    { }
+    public List<TodoListViewModel> TodoLists { get; init; }
+}
 
-    public class ViewModel
+public class GetTodoListsHandler : IRequestHandler<GetTodoListsQueryModel, GetTodoListsViewModel>
+{
+    private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+    private readonly ReadonlyDbContext _readDb;
+
+    public GetTodoListsHandler(IAggregateRepository<TodoListAggregateRoot> repository, ReadonlyDbContext readDb)
     {
-        public List<TodoListViewModel> TodoLists { get; init; }
+        _repository = repository;
+        _readDb = readDb;
     }
-
-    public class Handler : IRequestHandler<QueryModel, ViewModel>
+    
+    public async Task<GetTodoListsViewModel> Handle(
+        GetTodoListsQueryModel request, 
+        CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
-        private readonly ReadonlyDbContext _readDb;
-
-        public Handler(IAggregateRepository<TodoListAggregateRoot> repository, ReadonlyDbContext readDb)
-        {
-            _repository = repository;
-            _readDb = readDb;
-        }
+        var todoLists = await _readDb
+            .Set<TodoList>()
+            .Include(x => x.TodoItems)
+            .ToListAsync(cancellationToken: cancellationToken);
         
-        public async Task<ViewModel> Handle(QueryModel request, CancellationToken cancellationToken)
+        return new GetTodoListsViewModel
         {
-            var todoLists = await _readDb.Set<TodoList>().ToListAsync(cancellationToken: cancellationToken);
-            return new ViewModel
+            TodoLists = todoLists.Select(x => new TodoListViewModel
             {
-                TodoLists = todoLists.Select(x => new TodoListViewModel
+                StreamId = x.Id,
+                Title = x.Title,
+                TodoItems = x.TodoItems.Select(y => new TodoItemViewModel
                 {
-                    StreamId = x.Id,
-                    Title = x.Title,
-                    TodoItems = x.TodoItems?.Select(y => new TodoItemViewModel
-                    {
-                        Id = y.Id,
-                        Description = y.Description,
-                        IsCompleted = y.IsComplete,
-                        Order = y.ItemNumber
-                    }).ToList() ?? new List<TodoItemViewModel>()
+                    Id = y.Id,
+                    Description = y.Description,
+                    IsCompleted = y.IsComplete,
+                    Order = y.ItemNumber
                 }).ToList()
-            };
-        }
+            }).ToList()
+        };
     }
 }

@@ -4,30 +4,34 @@ using MiniESS.Todo.Todo.WriteModels;
 
 namespace MiniESS.Todo.Todo;
 
-public static class AddTodoList
+public class AddTodoListInputModel : IRequest<AddTodoListResponseModel>
 {
-    public class InputModel : IRequest<ResponseModel>
-    {
-        
-    }
+    public string Title { get; set; }
+}
 
-    public class ResponseModel
+public class AddTodoListResponseModel
+{
+    public Guid CreatedTodoListId { get; set; }
+}
+
+public class AddTodoListHandler : IRequestHandler<AddTodoListInputModel, AddTodoListResponseModel>
+{
+    private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+
+    public AddTodoListHandler(IAggregateRepository<TodoListAggregateRoot> repository)
     {
-        
+        _repository = repository;
     }
     
-    public class Query : IRequestHandler<InputModel, ResponseModel>
+    public async Task<AddTodoListResponseModel> Handle(
+        AddTodoListInputModel request, 
+        CancellationToken cancellationToken)
     {
-        private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+        var streamId = Guid.NewGuid();
+        await _repository.PersistAsync(
+            TodoListAggregateRoot.Create(streamId, request.Title), 
+            cancellationToken);
 
-        public Query(IAggregateRepository<TodoListAggregateRoot> repository)
-        {
-            _repository = repository;
-        }
-        
-        public Task<ResponseModel> Handle(InputModel request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        return new AddTodoListResponseModel { CreatedTodoListId = streamId };
     }
 }
