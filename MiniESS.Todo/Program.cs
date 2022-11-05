@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniESS.Core;
 using MiniESS.Projection;
 using MiniESS.Todo.Configuration;
+using MiniESS.Todo.Exceptions;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
@@ -18,7 +19,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSwaggerDocument();
 builder.Services.AddTransient(sp => new ReadonlyDbContext(sp.GetRequiredService<TodoDbContext>()));
 builder.Services.AddEventSourcingRepository<TodoListAggregateRoot>();
-builder.Services.AddProblemDetails()
+builder.Services.AddProblemDetails(opt =>
+    {
+        opt.MapToStatusCode<DomainException>(StatusCodes.Status400BadRequest);
+        opt.MapToStatusCode<NotFoundException>(StatusCodes.Status404NotFound);
+    })
     .AddControllers()
     .AddProblemDetailsConventions()
     .AddJsonOptions(x => x.JsonSerializerOptions.IgnoreNullValues = true);
