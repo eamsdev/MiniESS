@@ -1,9 +1,6 @@
-using System.Text;
 using EventStore.Client;
 using MiniESS.Core.Aggregate;
-using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
-using Newtonsoft.Json;
 
 namespace MiniESS.Core.Repository;
 

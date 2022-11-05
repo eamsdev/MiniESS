@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MiniESS.Todo.Tests.Extensions;
 using MiniESS.Todo.Tests.Utils;
 using MiniESS.Todo.Todo;

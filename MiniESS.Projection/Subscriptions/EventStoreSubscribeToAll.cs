@@ -1,12 +1,8 @@
-using System.Text;
 using EventStore.Client;
-using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
 using MiniESS.Projection.Projections;
 using MiniESS.Projection.Events;
-using Newtonsoft.Json;
 using Polly;
 
 namespace MiniESS.Projection.Subscriptions;

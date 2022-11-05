@@ -1,14 +1,11 @@
 ﻿using System.Reflection;
-using System.Xaml.Permissions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Projection;
 using MiniESS.Projection.Projections;
-using MiniESS.Todo.Todo;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
-using MoreLinq.Extensions;
 
 namespace MiniESS.Todo.Tests;
 

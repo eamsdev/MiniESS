@@ -1,7 +1,6 @@
 using System.Reflection;
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Serialization;
