@@ -35,6 +35,16 @@ export interface AddTodoListInputModel {
     Title: string;
 }
 
+export interface AddTodoItemResponseModel {
+    TodoListId: string;
+    CreatedTodoItemId: number;
+}
+
+export interface AddTodoItemInputModel {
+    TodoListId: string;
+    Description: string;
+}
+
 export interface GetTodoListViewModel {
     TodoList: TodoListViewModel;
 }

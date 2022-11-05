@@ -68,4 +68,27 @@ public class QueryTests : IClassFixture<CustomWebApplicationFactory>
         getResponseContent.TodoList.Title.Should().Be(todoListName);
         getResponseContent.TodoList.TodoItems.Should().BeEmpty();
     }
+    
+    [Fact]
+    public async Task CanAddTodoItem()
+    {
+        // Arrange
+        var todoListName = Guid.NewGuid().ToString();
+        var addTodoListInputModel = new AddTodoListInputModel { Title = todoListName };
+        var addTodoItemInputModel = new AddTodoItemInputModel { Description = "foobar" };
+
+        // Act
+        var addResponse = await _client.PostRouteAsJsonAsync("Todo", addTodoListInputModel);
+        var createdTodoListId = (await addResponse.DeserializeContentAsync<AddTodoListResponseModel>()).CreatedTodoListId;
+        var addItemResponse = await _client.PostRouteAsJsonAsync($"Todo/{createdTodoListId}/items", addTodoItemInputModel);
+        var getResponse = await _client.GetRouteAsync($"Todo/{createdTodoListId}");
+        var getResponseContent = await getResponse.DeserializeContentAsync<GetTodoListViewModel>();
+
+        // Assert
+        addItemResponse.EnsureSuccessStatusCode();
+        getResponseContent.TodoList.TodoItems.Should().ContainSingle();
+        getResponseContent.TodoList.TodoItems.Single().Id.Should().Be(1);
+        getResponseContent.TodoList.TodoItems.Single().Description.Should().Be("foobar");
+        getResponseContent.TodoList.TodoItems.Single().IsCompleted.Should().BeFalse();
+    }
 }

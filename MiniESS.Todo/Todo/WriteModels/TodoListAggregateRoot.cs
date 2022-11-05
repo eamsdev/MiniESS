@@ -79,7 +79,7 @@ public static class TodoListEvents
     public record TodoItemAdded : BaseDomainEvent<TodoListAggregateRoot>
     {
         public int ItemNumber { get; set; }
-        public string Description { get; }
+        public string Description { get; set; }
 
         private TodoItemAdded() { }
 

@@ -11,7 +11,9 @@ public class TodoController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ILogger<TodoController> _logger;
 
-    public TodoController(ILogger<TodoController> logger, IMediator mediator)
+    public TodoController(
+        ILogger<TodoController> logger, 
+        IMediator mediator)
     {
         _logger = logger;
         _mediator = mediator;
@@ -24,9 +26,22 @@ public class TodoController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<AddTodoListResponseModel>> AddTodoList([FromBody] AddTodoListInputModel inputModel)
+    public async Task<ActionResult<AddTodoListResponseModel>> AddTodoList(
+        [FromBody] AddTodoListInputModel inputModel)
     {
         return await _mediator.Send(inputModel);
+    }
+    
+    [HttpPost]
+    [Route("{todoId:guid}/items")]
+    public async Task<ActionResult<AddTodoItemResponseModel>> AddTodoItem(
+        Guid todoId, 
+        [FromBody] AddTodoItemInputModel inputModel)
+    {
+        return await _mediator.Send(new AddTodoItemInputModel
+        {
+            TodoListId = todoId, Description = inputModel.Description
+        });
     }
     
     [HttpGet]
