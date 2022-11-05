@@ -31,12 +31,12 @@ public static class DependencyInjection
                 builder.AddConsole();
                 builder.AddDebug();
             })
-            .AddSingleton(_ => new EventSerializer(config.SerializableAssemblies))
-            .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
-            .AddSingleton<EventStoreSubscriber>()
-            .AddSingleton<ProjectionOrchestrator>()
-            .AddSingleton<SubscriptionCheckpointRepository>()
-            .AddSingleton<IEventStoreSubscriber, EventStoreSubscriber>()
+            .AddTransient(_ => new EventSerializer(config.SerializableAssemblies))
+            .AddTransient(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
+            .AddTransient<EventStoreSubscriber>()
+            .AddTransient<ProjectionOrchestrator>()
+            .AddTransient<SubscriptionCheckpointRepository>()
+            .AddTransient<IEventStoreSubscriber, EventStoreSubscriber>()
             .AddSingleton(sp => new EventStoreSubscribeToAll(
                 sp.GetRequiredService<EventSerializer>(),
                 sp.GetRequiredService<IEventStoreSubscriber>(),

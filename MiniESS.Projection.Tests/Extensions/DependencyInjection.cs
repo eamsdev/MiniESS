@@ -16,10 +16,10 @@ public static class DependencyInjection
         return services
             .RemoveAll<IEventStoreClient>()
             .RemoveAll<EventStoreClient>()
-            .AddSingleton<IEventStoreClient, FakeEventStoreClientAdaptor>()
+            .AddScoped<IEventStoreClient, FakeEventStoreClientAdaptor>()
             .RemoveAll<IEventStoreSubscriber>()
             .RemoveAll<EventStoreSubscriber>()
             .AddDbContext<DummyDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("ProjectionTests"))
-            .AddSingleton<IEventStoreSubscriber, FakeEventStoreSubscriber>();
+            .AddScoped<IEventStoreSubscriber, FakeEventStoreSubscriber>();
     }
 }

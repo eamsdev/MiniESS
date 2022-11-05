@@ -13,6 +13,6 @@ public static class DependencyInjection
         return services
             .RemoveAll<IEventStoreClient>()
             .RemoveAll<EventStoreClient>()
-            .AddSingleton<IEventStoreClient, FakeEventStoreClientAdaptor>();
+            .AddTransient<IEventStoreClient, FakeEventStoreClientAdaptor>();
     }
 }

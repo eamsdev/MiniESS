@@ -15,15 +15,15 @@ public static class DependencyInjection
    {
       var config = ConfigurationOption.Create(configureAction);
       return services
-         .AddSingleton(_ => new EventSerializer(config.SerializableAssemblies))
-         .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
-         .AddSingleton<IEventStoreClient, EventStoreClientAdaptor>();
+         .AddTransient(_ => new EventSerializer(config.SerializableAssemblies))
+         .AddTransient(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
+         .AddTransient<IEventStoreClient, EventStoreClientAdaptor>();
    }
 
    public static IServiceCollection AddEventSourcingRepository<TAggregateRoot>(this IServiceCollection services) 
       where TAggregateRoot : class, IAggregateRoot
    {
-      return services.AddSingleton<IAggregateRepository<TAggregateRoot>>(sp =>
+      return services.AddScoped<IAggregateRepository<TAggregateRoot>>(sp =>
       {
          var client = sp.GetRequiredService<IEventStoreClient>();
          var serializer = sp.GetRequiredService<EventSerializer>();
