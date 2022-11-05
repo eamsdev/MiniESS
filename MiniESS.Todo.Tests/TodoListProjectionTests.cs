@@ -1,11 +1,14 @@
 ﻿using System.Reflection;
+using System.Xaml.Permissions;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Projection;
 using MiniESS.Projection.Projections;
 using MiniESS.Todo.Todo;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
+using MoreLinq.Extensions;
 
 namespace MiniESS.Todo.Tests;
 
@@ -42,7 +45,9 @@ public class TodoListProjectionTests
 
         // Act
         await _orchestrator.SendToProjector(@event, CancellationToken.None);
-        var readModel = await _dbContext.Set<TodoList>().FindAsync(streamId);
+        var readModel = await _dbContext.Set<TodoList>()
+            .Include(x => x.TodoItems)
+            .SingleOrDefaultAsync(x => x.Id == streamId);
 
         // Assert
         readModel.Should().NotBeNull();
@@ -65,7 +70,10 @@ public class TodoListProjectionTests
         await _orchestrator.SendToProjector(created, CancellationToken.None);
         await _orchestrator.SendToProjector(firstItem, CancellationToken.None);
         await _orchestrator.SendToProjector(secondItem, CancellationToken.None);
-        var readModel = await _dbContext.Set<TodoList>().FindAsync(streamId);
+        var readModel = await _dbContext
+            .Set<TodoList>()
+            .Include(x => x.TodoItems)
+            .SingleOrDefaultAsync(x => x.Id == streamId);
 
         // Assert
         readModel.Should().NotBeNull();
@@ -90,7 +98,10 @@ public class TodoListProjectionTests
         await _orchestrator.SendToProjector(firstItem, CancellationToken.None);
         await _orchestrator.SendToProjector(secondItem, CancellationToken.None);
         await _orchestrator.SendToProjector(completeSecondItem, CancellationToken.None);
-        var readModel = await _dbContext.Set<TodoList>().FindAsync(streamId);
+        var readModel = await _dbContext
+            .Set<TodoList>()
+            .Include(x => x.TodoItems)
+            .SingleOrDefaultAsync(x => x.Id == streamId);
 
         // Assert
         readModel.Should().NotBeNull();
