@@ -1,5 +1,5 @@
 import { RouterFactory } from './RouterFactory';
-import { RouteWithBehaviour, onRoute, ControllerDictionary, RouteDictionary } from './RouterModels';
+import { RouteWithBehaviour, ControllerDictionary, RouteDictionary } from './RouterModels';
 import { observable, makeObservable, IReactionDisposer, reaction, action, runInAction } from 'mobx';
 import { Router, State, transitionPath } from 'router5';
 
