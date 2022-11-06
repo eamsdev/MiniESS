@@ -44,10 +44,9 @@ public class GetTodoListHandler : IRequestHandler<GetTodoListQueryModel, GetTodo
                 Title = todoList.Title,
                 TodoItems = todoList.TodoItems.Select(y => new TodoItemViewModel
                 {
-                    Id = y.Id,
+                    Id = y.ItemNumber,
                     Description = y.Description,
-                    IsCompleted = y.IsComplete,
-                    Order = y.ItemNumber
+                    IsCompleted = y.IsComplete
                 }).ToList()
             }
         };

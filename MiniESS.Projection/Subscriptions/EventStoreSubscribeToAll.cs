@@ -58,7 +58,7 @@ public class EventStoreSubscribeToAll
          {
             TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(15)
          }, (exception, timeSpan) => {
-            _logger.LogWarning("Attempted to subscribe to EventStoreDB, failed due to {}, after {} seconds", exception.ToString(), timeSpan.TotalSeconds);  
+            _logger.LogWarning("Attempted to subscribe to EventStoreDB, failed due to {}, after {} seconds", exception.GetType().ToString(), timeSpan.TotalSeconds);  
          });
          
          await retryCheckpointLoadPolicy.ExecuteAsync(async () => checkpoint = await _checkpointRepository.Load(SubscriptionId, cancellationToken));

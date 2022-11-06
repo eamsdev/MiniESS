@@ -18,7 +18,6 @@ public class QueryTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetTodosReturns200OkAndExpectedContent()
     {
         // Arrange
-        
         // Act
         var response = await _client.GetRouteAsync("Todo");
         var responseContent = await response.DeserializeContentAsync<GetTodoListsViewModel>();
@@ -58,6 +57,7 @@ public class QueryTests : IClassFixture<CustomWebApplicationFactory>
         // Act
         var addResponse = await _client.PostRouteAsJsonAsync("Todo", inputModel);
         var createdItemId = (await addResponse.DeserializeContentAsync<AddTodoListResponseModel>()).CreatedTodoListId;
+        
         var getResponse = await _client.GetRouteAsync($"Todo/{createdItemId}");
         var getResponseContent = await getResponse.DeserializeContentAsync<GetTodoListViewModel>();
 
@@ -87,8 +87,35 @@ public class QueryTests : IClassFixture<CustomWebApplicationFactory>
         // Assert
         addItemResponse.EnsureSuccessStatusCode();
         getResponseContent.TodoList.TodoItems.Should().ContainSingle();
-        getResponseContent.TodoList.TodoItems.Single().Id.Should().Be(1);
+        getResponseContent.TodoList.TodoItems.Single().Id.Should().Be(0);
         getResponseContent.TodoList.TodoItems.Single().Description.Should().Be("foobar");
         getResponseContent.TodoList.TodoItems.Single().IsCompleted.Should().BeFalse();
+    }
+    
+    [Fact]
+    public async Task CanCompleteTodoItem()
+    {
+        // Arrange
+        var todoListName = Guid.NewGuid().ToString();
+        var addTodoListInputModel = new AddTodoListInputModel { Title = todoListName };
+        var addTodoItemInputModel = new AddTodoItemInputModel { Description = "foobar" };
+
+        // Act
+        var addResponse = await _client.PostRouteAsJsonAsync("Todo", addTodoListInputModel);
+        var createdTodoListId = (await addResponse.DeserializeContentAsync<AddTodoListResponseModel>()).CreatedTodoListId;
+        
+        var addItemResponse = await _client.PostRouteAsJsonAsync($"Todo/{createdTodoListId}/items", addTodoItemInputModel);
+        var addItemResponseContent = await addItemResponse.DeserializeContentAsync<AddTodoItemResponseModel>();
+        var completeTodoItemResponse = await _client.PutRouteAsJsonAsync($"Todo/{createdTodoListId}/items/{addItemResponseContent.CreatedTodoItemId}", new CompleteTodoItemInputModel());
+        
+        var getResponse = await _client.GetRouteAsync($"Todo/{createdTodoListId}");
+        var getResponseContent = await getResponse.DeserializeContentAsync<GetTodoListViewModel>();
+
+        // Assert
+        completeTodoItemResponse.EnsureSuccessStatusCode();
+        getResponseContent.TodoList.TodoItems.Should().ContainSingle();
+        getResponseContent.TodoList.TodoItems.Single().Id.Should().Be(0);
+        getResponseContent.TodoList.TodoItems.Single().Description.Should().Be("foobar");
+        getResponseContent.TodoList.TodoItems.Single().IsCompleted.Should().BeTrue();
     }
 }

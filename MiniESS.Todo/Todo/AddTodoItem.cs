@@ -30,10 +30,8 @@ public class AddTodoItemHandler : IRequestHandler<AddTodoItemInputModel, AddTodo
     {
         var todoList = await _repository.LoadAsync(request.TodoListId!.Value, cancellationToken);
         if (todoList is null)
-        {
             throw new NotFoundException($"TodoList with stream id {request.TodoListId!.Value} not found.");
-        }
-
+        
         todoList.AddTodoItem(request.Description);
         await _repository.PersistAsync(todoList, cancellationToken);
 

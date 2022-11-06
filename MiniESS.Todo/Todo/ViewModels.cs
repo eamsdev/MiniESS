@@ -10,7 +10,6 @@ public class TodoListViewModel
 public class TodoItemViewModel
 {
     public int Id { get; init; }
-    public int Order { get; init; }
     public bool IsCompleted { get; init; }
     public string Description { get; init; }
 }

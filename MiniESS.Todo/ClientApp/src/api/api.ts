@@ -22,9 +22,12 @@ export interface TodoListViewModel {
 
 export interface TodoItemViewModel {
     Id: number;
-    Order: number;
     IsCompleted: boolean;
     Description: string;
+}
+
+export interface GetTodoListViewModel {
+    TodoList: TodoListViewModel;
 }
 
 export interface AddTodoListResponseModel {
@@ -45,8 +48,14 @@ export interface AddTodoItemInputModel {
     Description: string;
 }
 
-export interface GetTodoListViewModel {
-    TodoList: TodoListViewModel;
+export interface CompleteTodoItemResponseModel {
+    TodoListId: string;
+    TodoItemId: number;
+}
+
+export interface CompleteTodoItemInputModel {
+    TodoListId: string;
+    TodoItemId: number;
 }
 
 export interface WeatherForecast {
