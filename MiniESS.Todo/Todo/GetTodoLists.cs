@@ -11,7 +11,7 @@ public class GetTodoListsQueryModel : IRequest<GetTodoListsViewModel>
 
 public class GetTodoListsViewModel
 {
-    public List<TodoListViewModel> TodoLists { get; init; }
+    public List<TodoList> TodoLists { get; init; }
 }
 
 public class GetTodoListsHandler : IRequestHandler<GetTodoListsQueryModel, GetTodoListsViewModel>
@@ -30,17 +30,17 @@ public class GetTodoListsHandler : IRequestHandler<GetTodoListsQueryModel, GetTo
         CancellationToken cancellationToken)
     {
         var todoLists = await _readDb
-            .Set<TodoList>()
+            .Set<ReadModels.TodoList>()
             .Include(x => x.TodoItems)
             .ToListAsync(cancellationToken: cancellationToken);
         
         return new GetTodoListsViewModel
         {
-            TodoLists = todoLists.Select(x => new TodoListViewModel
+            TodoLists = todoLists.Select(x => new TodoList
             {
                 StreamId = x.Id,
                 Title = x.Title,
-                TodoItems = x.TodoItems.Select(y => new TodoItemViewModel
+                TodoItems = x.TodoItems.Select(y => new TodoItem
                 {
                     Id = y.ItemNumber,
                     Description = y.Description,

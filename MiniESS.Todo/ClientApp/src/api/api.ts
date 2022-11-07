@@ -11,23 +11,23 @@
 
 
 export interface GetTodoListsViewModel {
-    TodoLists: TodoListViewModel[];
+    TodoLists: TodoList[];
 }
 
-export interface TodoListViewModel {
+export interface TodoList {
     StreamId: string;
     Title: string;
-    TodoItems: TodoItemViewModel[];
+    TodoItems: TodoItem[];
 }
 
-export interface TodoItemViewModel {
+export interface TodoItem {
     Id: number;
     IsCompleted: boolean;
     Description: string;
 }
 
 export interface GetTodoListViewModel {
-    TodoList: TodoListViewModel;
+    TodoList: TodoList;
 }
 
 export interface AddTodoListResponseModel {

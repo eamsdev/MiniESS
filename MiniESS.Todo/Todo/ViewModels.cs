@@ -1,13 +1,13 @@
 ﻿namespace MiniESS.Todo.Todo;
 
-public class TodoListViewModel
+public class TodoList
 {
     public Guid StreamId { get; init; }
     public string Title { get; init; }
-    public List<TodoItemViewModel> TodoItems { get; init; }
+    public List<TodoItem> TodoItems { get; init; }
 }
 
-public class TodoItemViewModel
+public class TodoItem
 {
     public int Id { get; init; }
     public bool IsCompleted { get; init; }
