@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import TodoItem, { TodoItemProps } from './TodoItem';
 import TodoItemInput from './TodoItemInput';
 
-type TodoListProps = {
+export type TodoListProps = {
   title: string;
   items: TodoItemProps[];
   onSubmit: (name: string) => Promise<void>;
