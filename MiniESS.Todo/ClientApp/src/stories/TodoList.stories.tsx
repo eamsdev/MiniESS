@@ -13,20 +13,20 @@ Default.args = {
   title: 'Grocery List',
   items: [
     {
-      isChecked: true,
-      label: 'Onions',
+      isCompleted: true,
+      description: 'Onions',
     },
     {
-      isChecked: false,
-      label: 'Steak',
+      isCompleted: false,
+      description: 'Steak',
     },
     {
-      isChecked: true,
-      label: 'Milk',
+      isCompleted: true,
+      description: 'Milk',
     },
     {
-      isChecked: false,
-      label: 'Bread',
+      isCompleted: false,
+      description: 'Bread',
     },
   ],
 };

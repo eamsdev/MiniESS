@@ -1,42 +1,58 @@
+import { TodoListProps } from './../../components-library/TodoList';
 import { TodoItem, TodoList } from '../../api/api';
+import { TodoItemProps } from '../../components-library/TodoItem';
 
-export class TodoListViewModel {
+export class TodoListModel {
   id: string;
   title: string;
-  todoItems: TodoItemViewModel[];
+  todoItems: TodoItemModel[];
 
-  constructor(id: string, title: string, todoItems: TodoItemViewModel[]) {
+  constructor(id: string, title: string, todoItems: TodoItemModel[]) {
     this.id = id;
     this.title = title;
     this.todoItems = todoItems;
   }
 
-  static From(model: TodoList, onComplete: (todoId: string, itemId: number) => Promise<void>) {
-    const partialOnComplete = async (itemId: number) => await onComplete(model.StreamId, itemId);
-    const todoItems = model.TodoItems.map((x) => TodoItemViewModel.From(x, partialOnComplete));
-    return new TodoListViewModel(model.StreamId, model.Title, todoItems);
+  static From(model: TodoList) {
+    const todoItems = model.TodoItems.map((x) => TodoItemModel.From(x));
+    return new TodoListModel(model.StreamId, model.Title, todoItems);
+  }
+
+  toPropsModel(
+    onNewItemAdded: (name: string) => Promise<void>,
+    onComplete: (todoId: string, itemId: number) => Promise<void>,
+  ): TodoListProps {
+    return {
+      title: this.title,
+      items: this.todoItems.map((x) =>
+        x.toPropModel(async (id: number) => await onComplete(this.id, id)),
+      ),
+      onSubmit: onNewItemAdded,
+    };
   }
 }
 
-export class TodoItemViewModel {
+export class TodoItemModel {
   id: number;
   isCompleted: boolean;
   description: string;
-  onComplete: () => Promise<void>;
 
-  constructor(
-    id: number,
-    isCompleted: boolean,
-    description: string,
-    onComplete: (itemId: number) => Promise<void>,
-  ) {
+  constructor(id: number, isCompleted: boolean, description: string) {
     this.id = id;
     this.isCompleted = isCompleted;
     this.description = description;
-    this.onComplete = async () => await onComplete(id);
   }
 
-  static From(model: TodoItem, onComplete: (itemId: number) => Promise<void>) {
-    return new TodoItemViewModel(model.Id, model.IsCompleted, model.Description, onComplete);
+  static From(model: TodoItem) {
+    return new TodoItemModel(model.Id, model.IsCompleted, model.Description);
+  }
+
+  toPropModel(onComplete: (id: number) => Promise<void>): TodoItemProps {
+    return {
+      id: this.id,
+      isCompleted: this.isCompleted,
+      description: this.description,
+      onComplete: onComplete,
+    };
   }
 }

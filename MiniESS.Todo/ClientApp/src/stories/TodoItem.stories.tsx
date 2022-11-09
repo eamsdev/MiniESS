@@ -10,7 +10,7 @@ const Template: ComponentStory<typeof TodoItem> = (arg) => <TodoItem {...arg} />
 
 export const Default = Template.bind({});
 Default.args = {
-  todoItemId: '2aj3f3g',
-  isChecked: true,
-  label: 'foobar',
+  id: '2aj3f3g',
+  isCompleted: true,
+  description: 'foobar',
 };

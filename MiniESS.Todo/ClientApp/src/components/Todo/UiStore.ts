@@ -1,4 +1,4 @@
-import { TodoListViewModel } from './Models';
+import { TodoListModel } from './Models';
 import { action, computed, makeObservable } from 'mobx';
 import { DomainStore } from './DomainStore';
 
@@ -18,7 +18,7 @@ export default class UiStore {
   @computed
   get todoListViewModels() {
     return this.domainStore.todoLists.map((todoList) =>
-      TodoListViewModel.From(todoList, this.domainStore.completeTodoItem),
+      TodoListModel.From(todoList, this.domainStore.completeTodoItem),
     );
   }
 }
