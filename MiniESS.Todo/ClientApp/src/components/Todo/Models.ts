@@ -19,7 +19,7 @@ export class TodoListModel {
   }
 
   toPropsModel(
-    onNewItemAdded: (name: string) => Promise<void>,
+    onNewItemAdded: (todoId: string, name: string) => Promise<void>,
     onComplete: (todoId: string, itemId: number) => Promise<void>,
   ): TodoListProps {
     return {
@@ -27,7 +27,7 @@ export class TodoListModel {
       items: this.todoItems.map((x) =>
         x.toPropModel(async (id: number) => await onComplete(this.id, id)),
       ),
-      onSubmit: onNewItemAdded,
+      onSubmit: async (name: string) => await onNewItemAdded(this.id, name),
     };
   }
 }

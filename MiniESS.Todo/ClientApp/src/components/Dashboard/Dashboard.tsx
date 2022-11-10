@@ -1,5 +1,12 @@
 import { FunctionComponent } from 'react';
+import { TodoLists } from '../Todo/TodoLists';
+import { todoUiStore } from '../Todo/UiStore';
 
 export const Dashboard: FunctionComponent = () => {
-  return <h1>Dashboard Placeholder</h1>;
+  return (
+    <TodoLists
+      todoLists={todoUiStore.todoListsProps}
+      onSubmit={todoUiStore.domainStore.addNewTodoList}
+    />
+  );
 };

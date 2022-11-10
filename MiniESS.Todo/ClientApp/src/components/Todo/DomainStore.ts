@@ -22,4 +22,20 @@ export class DomainStore {
       await this.loadTodoLists();
     });
   }
+
+  @action.bound
+  async addNewTodoList(title: string) {
+    await TodoApi.addTodo(title);
+    runInAction(async () => {
+      await this.loadTodoLists();
+    });
+  }
+
+  @action.bound
+  async onNewTodoItemAdded(todoId: string, name: string) {
+    await TodoApi.addTodoItem(todoId, name);
+    runInAction(async () => {
+      await this.loadTodoLists();
+    });
+  }
 }
