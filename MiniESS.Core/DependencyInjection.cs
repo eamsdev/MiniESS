@@ -16,7 +16,7 @@ public static class DependencyInjection
       var config = ConfigurationOption.Create(configureAction);
       return services
          .AddTransient(_ => new EventSerializer(config.SerializableAssemblies))
-         .AddTransient(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
+         .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
          .AddTransient<IEventStoreClient, EventStoreClientAdaptor>();
    }
 

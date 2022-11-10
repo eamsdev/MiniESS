@@ -31,7 +31,7 @@ public static class DependencyInjection
                 builder.AddDebug();
             })
             .AddTransient(_ => new EventSerializer(config.SerializableAssemblies))
-            .AddTransient(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
+            .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
             .AddTransient<EventStoreSubscriber>()
             .AddTransient<ProjectionOrchestrator>()
             .AddTransient<SubscriptionCheckpointRepository>()

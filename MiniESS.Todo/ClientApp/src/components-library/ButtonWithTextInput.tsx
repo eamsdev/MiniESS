@@ -6,7 +6,7 @@ export type TodoItemInputProps = {
   onSubmit: (name: string) => Promise<void>;
 };
 
-const TodoItemInput: FC<TodoItemInputProps> = (props: TodoItemInputProps) => {
+const ButtonWithTextInput: FC<TodoItemInputProps> = (props: TodoItemInputProps) => {
   const [currentValue, setCurrentValue] = useState<string>('');
   return (
     <InputGroup>
@@ -31,4 +31,4 @@ const TodoItemInput: FC<TodoItemInputProps> = (props: TodoItemInputProps) => {
   );
 };
 
-export default TodoItemInput;
+export default ButtonWithTextInput;

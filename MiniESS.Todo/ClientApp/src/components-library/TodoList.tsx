@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Card } from 'react-bootstrap';
 import TodoItem, { TodoItemProps } from './TodoItem';
-import TodoItemInput from './TodoItemInput';
+import ButtonWithTextInput from './ButtonWithTextInput';
 
 export type TodoListProps = {
   title: string;
@@ -20,7 +20,7 @@ const TodoList: FC<TodoListProps> = (props: TodoListProps) => {
             return <TodoItem key={item.description} {...item} />;
           })}
         <div className="mt-3" />
-        <TodoItemInput onSubmit={onSubmit} />
+        <ButtonWithTextInput onSubmit={onSubmit} />
       </Card.Body>
     </Card>
   );

@@ -1,12 +1,14 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import TodoItemInput from '../components-library/TodoItemInput';
+import ButtonWithTextInput from '../components-library/ButtonWithTextInput';
 
 export default {
-  title: 'App/TodoItemInput',
-  component: TodoItemInput,
-} as ComponentMeta<typeof TodoItemInput>;
+  title: 'App/ButtonWithTextInput',
+  component: ButtonWithTextInput,
+} as ComponentMeta<typeof ButtonWithTextInput>;
 
-const Template: ComponentStory<typeof TodoItemInput> = (arg) => <TodoItemInput {...arg} />;
+const Template: ComponentStory<typeof ButtonWithTextInput> = (arg) => (
+  <ButtonWithTextInput {...arg} />
+);
 
 export const Default = Template.bind({});
 Default.args = {};

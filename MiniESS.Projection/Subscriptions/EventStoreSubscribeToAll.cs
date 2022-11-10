@@ -1,8 +1,10 @@
 using EventStore.Client;
 using Microsoft.Extensions.Logging;
+using MiniESS.Core.Events;
 using MiniESS.Core.Serialization;
 using MiniESS.Projection.Projections;
 using MiniESS.Projection.Events;
+using Newtonsoft.Json;
 using Polly;
 
 namespace MiniESS.Projection.Subscriptions;
@@ -40,14 +42,15 @@ public class EventStoreSubscribeToAll
             _logger.LogInformation("Checkpoint not found, subscribing from the start of the stream");
          else
             _logger.LogInformation("Checkpoint found at position: {}, subscribing from after this position", checkpoint.Value);
-         
+
          await _subscriber.SubscribeToAllAsync(
-            checkpoint is null ? FromAll.Start : FromAll.After(new Position(checkpoint.Value, checkpoint.Value)), 
+            checkpoint is null ? FromAll.Start : FromAll.After(new Position(checkpoint.Value, checkpoint.Value)),
             HandleEvent,
-            subscriptionDropped: (subscription, reason, _) 
-               => _logger.LogError("Subscription {}, has been dropped due to {}", 
-                  subscription.SubscriptionId, 
-                  reason.ToString()),
+            subscriptionDropped: (subscription, reason, exception)
+               => _logger.LogError("Subscription {SubscriptionId}, has been dropped due to {Reason}, exception: {Exception}",
+                  subscription.SubscriptionId,
+                  reason.ToString(), exception?.Message),
+            filterOptions: new SubscriptionFilterOptions(EventTypeFilter.ExcludeSystemEvents()),
             cancellationToken: cancellationToken);
       }
 
@@ -75,8 +78,25 @@ public class EventStoreSubscribeToAll
             _logger.LogTrace("Found checkpoint event, ignoring this event");
             return;
          }
+         
+         if (resolvedEvent.Event.Data.Length is 0 || resolvedEvent.Event.Metadata.Length is 0) 
+         {
+            _logger.LogTrace("Found event without data, type: {EventType}, ignoring this event", resolvedEvent.Event.EventType);
+            return;
+         }
 
-         await _projectionOrchestrator.SendToProjector(_serializer.Map(resolvedEvent), cancellationToken);
+         IDomainEvent domainEvent;
+         try
+         {
+            domainEvent = _serializer.Map(resolvedEvent);
+         }
+         catch (Exception)
+         {
+            _logger.LogTrace("Unable to deserialize event type: {EventType}, id: {StreamId} ignoring this event", resolvedEvent.Event.EventType, resolvedEvent.Event.EventStreamId);
+            return;
+         }
+         
+         await _projectionOrchestrator.SendToProjector(domainEvent, cancellationToken);
          await _checkpointRepository.Store(SubscriptionId, resolvedEvent.Event.Position.CommitPosition, cancellationToken: cancellationToken);
       }
 }
