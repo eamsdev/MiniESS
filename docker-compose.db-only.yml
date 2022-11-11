@@ -17,6 +17,17 @@ services:
             - '2113:2113'
         networks:
             - miniess-net
+    
+    sqlserver:
+        image: "mcr.microsoft.com/mssql/server"
+        container_name: docker_sqlserver
+        environment:
+            SA_PASSWORD: "password_123"
+            ACCEPT_EULA: "Y"
+        networks:
+            - miniess-net
+        ports:
+            - '1492:1433'
 
 networks:
     miniess-net:

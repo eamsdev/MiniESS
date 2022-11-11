@@ -81,7 +81,7 @@ public class EventStoreSubscribeToAll
          
          if (resolvedEvent.Event.Data.Length is 0 || resolvedEvent.Event.Metadata.Length is 0) 
          {
-            _logger.LogTrace("Found event without data, type: {EventType}, ignoring this event", resolvedEvent.Event.EventType);
+            _logger.LogTrace("Found event without data, type: {EventType}, dropping this event", resolvedEvent.Event.EventType);
             return;
          }
 
@@ -92,7 +92,7 @@ public class EventStoreSubscribeToAll
          }
          catch (Exception)
          {
-            _logger.LogTrace("Unable to deserialize event type: {EventType}, id: {StreamId} ignoring this event", resolvedEvent.Event.EventType, resolvedEvent.Event.EventStreamId);
+            _logger.LogTrace("Unable to deserialize event type: {EventType}, id: {StreamId} dropping this event", resolvedEvent.Event.EventType, resolvedEvent.Event.EventStreamId);
             return;
          }
          
