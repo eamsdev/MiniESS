@@ -12,7 +12,7 @@ export type TodoListProps = {
 const TodoList: FC<TodoListProps> = (props: TodoListProps) => {
   const { items, title, onSubmit } = props;
   return (
-    <Card style={{ width: '250px' }}>
+    <Card style={{ width: '250px', margin: '10px' }}>
       <Card.Body>
         <Card.Title>{title}</Card.Title>
         {items &&
@@ -20,7 +20,7 @@ const TodoList: FC<TodoListProps> = (props: TodoListProps) => {
             return <TodoItem key={item.description} {...item} />;
           })}
         <div className="mt-3" />
-        <ButtonWithTextInput onSubmit={onSubmit} />
+        <ButtonWithTextInput size="sm" onSubmit={onSubmit} />
       </Card.Body>
     </Card>
   );
