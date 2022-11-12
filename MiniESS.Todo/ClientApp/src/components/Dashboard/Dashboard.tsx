@@ -7,7 +7,9 @@ import { todoUiStore } from '../Todo/UiStore';
 export const Dashboard: FunctionComponent = observer(() => {
   return (
     <>
-      <ButtonWithTextInput onSubmit={todoUiStore.domainStore.addNewTodoList} />
+      <div className="w-25 mb-3">
+        <ButtonWithTextInput onSubmit={todoUiStore.domainStore.addNewTodoList} />
+      </div>
       <TodoLists todoLists={todoUiStore.todoListsProps} />
     </>
   );
