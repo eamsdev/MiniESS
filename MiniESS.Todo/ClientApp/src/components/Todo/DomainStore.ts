@@ -3,7 +3,7 @@ import { TodoList } from '../../api/api';
 import TodoApi from './TodoApi';
 
 export class DomainStore {
-  @observable todoLists: TodoList[] = [];
+  @observable todoLists: TodoList[] = observable.array([]);
 
   constructor() {
     makeObservable(this);
@@ -12,7 +12,12 @@ export class DomainStore {
   @action.bound
   async loadTodoLists() {
     const getTodosResult = await TodoApi.getTodos();
-    this.todoLists = getTodosResult.data.TodoLists;
+    this.updateTodoLists(getTodosResult.data.todoLists);
+  }
+
+  @action
+  private updateTodoLists(todoLists: TodoList[]) {
+    this.todoLists = observable.array(todoLists);
   }
 
   @action.bound

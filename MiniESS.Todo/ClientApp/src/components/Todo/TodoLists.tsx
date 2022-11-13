@@ -9,7 +9,7 @@ export const TodoLists: FC<TodoListsProps> = (props: TodoListsProps) => {
   const { todoLists } = props;
   return (
     <>
-      {todoLists.map((x) => (
+      {todoLists?.map((x) => (
         <TodoList key={x.title} title={x.title} items={x.items} onSubmit={x.onSubmit}></TodoList>
       ))}
     </>

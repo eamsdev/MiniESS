@@ -17,7 +17,7 @@ export class UiStore {
 
   @computed
   get todoListsProps() {
-    return this.domainStore.todoLists.map((todoList) =>
+    return this.domainStore.todoLists?.map((todoList) =>
       TodoListModel.From(todoList).toPropsModel(
         this.domainStore.onNewTodoItemAdded,
         this.domainStore.completeTodoItem,

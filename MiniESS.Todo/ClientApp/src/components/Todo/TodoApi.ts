@@ -21,7 +21,7 @@ class TodoApis {
 
   async addTodo(title: string) {
     const data: AddTodoListInputModel = {
-      Title: title,
+      title: title,
     };
 
     return await TodoApiClient.post<AddTodoListResponseModel>('', data);
@@ -29,8 +29,8 @@ class TodoApis {
 
   async addTodoItem(todoListId: string, description: string) {
     const data: AddTodoItemInputModel = {
-      TodoListId: todoListId,
-      Description: description,
+      todoListId: todoListId,
+      description: description,
     };
 
     return await TodoApiClient.post<AddTodoItemResponseModel>(`/${todoListId}/items`, data);
@@ -38,8 +38,8 @@ class TodoApis {
 
   async completeTodoItem(todoListId: string, todoItemId: number) {
     const data: CompleteTodoItemInputModel = {
-      TodoListId: todoListId,
-      TodoItemId: todoItemId,
+      todoListId: todoListId,
+      todoItemId: todoItemId,
     };
 
     return await TodoApiClient.put<CompleteTodoItemResponseModel>(

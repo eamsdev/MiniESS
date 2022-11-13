@@ -11,56 +11,56 @@
 
 
 export interface GetTodoListsViewModel {
-    TodoLists: TodoList[];
+    todoLists: TodoList[];
 }
 
 export interface TodoList {
-    StreamId: string;
-    Title: string;
-    TodoItems: TodoItem[];
+    streamId: string;
+    title: string;
+    todoItems: TodoItem[];
 }
 
 export interface TodoItem {
-    Id: number;
-    IsCompleted: boolean;
-    Description: string;
+    id: number;
+    isCompleted: boolean;
+    description: string;
 }
 
 export interface GetTodoListViewModel {
-    TodoList: TodoList;
+    todoList: TodoList;
 }
 
 export interface AddTodoListResponseModel {
-    CreatedTodoListId: string;
+    createdTodoListId: string;
 }
 
 export interface AddTodoListInputModel {
-    Title: string;
+    title: string;
 }
 
 export interface AddTodoItemResponseModel {
-    TodoListId: string;
-    CreatedTodoItemId: number;
+    todoListId: string;
+    createdTodoItemId: number;
 }
 
 export interface AddTodoItemInputModel {
-    TodoListId: string;
-    Description: string;
+    todoListId: string;
+    description: string;
 }
 
 export interface CompleteTodoItemResponseModel {
-    TodoListId: string;
-    TodoItemId: number;
+    todoListId: string;
+    todoItemId: number;
 }
 
 export interface CompleteTodoItemInputModel {
-    TodoListId: string;
-    TodoItemId: number;
+    todoListId: string;
+    todoItemId: number;
 }
 
 export interface WeatherForecast {
-    Date: Date;
-    TemperatureC: number;
-    TemperatureF: number;
-    Summary: string;
+    date: Date;
+    temperatureC: number;
+    temperatureF: number;
+    summary: string;
 }
