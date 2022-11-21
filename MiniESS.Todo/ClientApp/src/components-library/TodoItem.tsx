@@ -14,13 +14,13 @@ const TodoItem: FC<TodoItemProps> = (props: TodoItemProps) => {
   return (
     <Stack direction="horizontal" gap={2}>
       <>
-        {props.isCompleted ? (
+        {!props.isCompleted ? (
           <>{props.description}</>
         ) : (
           <del className="completed-label">{props.description}</del>
         )}
       </>
-      {props.isCompleted && (
+      {!props.isCompleted && (
         <a onClick={async () => await props.onComplete(props.id)}>
           <FontAwesomeIcon icon={faSquareCheck} />
         </a>

@@ -1,9 +1,9 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, makeObservable, observable, values } from 'mobx';
 import { TodoList } from '../../api/api';
 import TodoApi from './TodoApi';
 
 export class DomainStore {
-  @observable todoLists: TodoList[] = observable.array([]);
+  @observable todoLists: TodoList[] = [];
 
   constructor() {
     makeObservable(this);
@@ -17,7 +17,7 @@ export class DomainStore {
 
   @action
   private updateTodoLists(todoLists: TodoList[]) {
-    this.todoLists = observable.array(todoLists);
+    this.todoLists = todoLists;
   }
 
   @action.bound

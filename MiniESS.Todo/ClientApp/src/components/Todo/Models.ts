@@ -14,8 +14,8 @@ export class TodoListModel {
   }
 
   static From(model: TodoList) {
-    const todoItems = model.TodoItems.map((x) => TodoItemModel.From(x));
-    return new TodoListModel(model.StreamId, model.Title, todoItems);
+    const todoItems = model.todoItems.map((x) => TodoItemModel.From(x));
+    return new TodoListModel(model.streamId, model.title, todoItems);
   }
 
   toPropsModel(
@@ -44,7 +44,7 @@ export class TodoItemModel {
   }
 
   static From(model: TodoItem) {
-    return new TodoItemModel(model.Id, model.IsCompleted, model.Description);
+    return new TodoItemModel(model.id, model.isCompleted, model.description);
   }
 
   toPropModel(onComplete: (id: number) => Promise<void>): TodoItemProps {
