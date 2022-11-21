@@ -38,6 +38,7 @@
     "@types/node": "^18.0.5",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
     "babel-loader": "^8.2.5",
@@ -83,6 +84,7 @@
     "router5": "^8.0.1",
     "router5-plugin-browser": "^8.0.1",
     "router5-transition-path": "^8.0.1",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "uuid": "^9.0.0"
   }
 }
