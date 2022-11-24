@@ -8,7 +8,15 @@ MiniESS was created as a learning exercise to understand the internal workings o
 
 ## Running the Todo list sample application
 
-*Work in progress*
+Run `docker-compose up`, navigate to `localhost:8090`
+
+Or if you want to run the application from the IDE or from host machine
+
+Run `docker-compose -f docker-compose.db-only.yml up`, navigate to `localhost:8090`
+
+![image info](./todo_example.png)
+
+You can navigate to `localhost:2113` to interact with EventStoreDB Ui
 
 ## Getting Started
 
