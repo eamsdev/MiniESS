@@ -194,7 +194,11 @@ public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, Cance
 
 ## Acknowledgements
 
-*Work in progress*
+MiniESS takes inspiration from the following open-source projects:
+
+1. [David Guida - Event Sourcing in .NET Core Series](https://www.davidguida.net/event-sourcing-in-net-core-part-1-a-gentle-introduction/)
+2. [Revo Framework](https://docs.revoframework.net)
+3. [oskardudycz - EventSourcing.NetCore tutorials](https://github.com/oskardudycz/EventSourcing.NetCore)
 
 ## License
 
