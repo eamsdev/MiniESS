@@ -6,6 +6,8 @@ MiniESS is an Event Sourcing Micro-framework that utilises EventStoreDB as the e
 
 MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical.
 
+![image architecture](./architecture.svg)
+
 ## Running the Todo list sample application
 
 Run `docker-compose up`, navigate to `localhost:8090`
@@ -14,7 +16,7 @@ Or if you want to run the application from the IDE or from host machine
 
 Run `docker-compose -f docker-compose.db-only.yml up`, navigate to `localhost:8090`
 
-![image info](./example.png)
+![image demo](./example.png)
 
 You can navigate to `localhost:2113` to interact with EventStoreDB Ui
 
