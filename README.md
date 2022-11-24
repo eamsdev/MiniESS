@@ -61,7 +61,7 @@ To begin, register your write models with the service collections, this will reg
 builder.Services.AddEventSourcingRepository<TodoListAggregateRoot>();
 ```
 
-Note: A private constructor is required for the framework to be able to hydrate the write-models.
+Note: A private constructor with an argument `Guid streamId` is required for the framework to be able to create and rehydrate the write-models.
 
 ```cs
 public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
@@ -136,7 +136,7 @@ See section *"Eventual vs Strong Consistency"* for explanations for the bahaviou
 
 With MiniESS, read model projectors inherits from the `ProjectorBase<T>` class.
 
-To begin, register your write models with the service collections, this will register the corresponding projectors used by the framwork.
+To begin, register your write models with the service collections, this will register the corresponding projectors used by the framework.
 
 ```cs
 builder.Services.AddProjector<TodoListAggregateRoot, TodoListProjector>();
@@ -194,7 +194,7 @@ public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, Cance
 
 ## Acknowledgements
 
-MiniESS takes inspiration from the following open-source projects:
+MiniESS takes inspiration from the following open-source projects/tutorials:
 
 1. [David Guida - Event Sourcing in .NET Core Series](https://www.davidguida.net/event-sourcing-in-net-core-part-1-a-gentle-introduction/)
 2. [Revo Framework](https://docs.revoframework.net)
