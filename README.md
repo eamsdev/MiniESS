@@ -4,7 +4,7 @@ MiniESS is an Event Sourcing Micro-framework that utilises EventStoreDB as the e
 
 ## Motivations
 
-MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical.
+MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical. This means using off the shelve products such as EventStoreDB to manage events and events subscriptions.
 
 ![image architecture](./architecture.svg)
 
@@ -181,6 +181,14 @@ public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, Cance
 ## Considerations
 
 ### Eventual vs Strong Consistency
+
+*Work in progress*
+
+### Catch up projections
+
+*Work in progress*
+
+### Snapshots
 
 *Work in progress*
 
