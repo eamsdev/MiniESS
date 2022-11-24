@@ -1,10 +1,184 @@
 # MiniESS
-MiniESS is a small Event Sourcing project used to demonstrate Event Sourcing architecture via a basic Todo List application.
 
-# Motivations
+MiniESS is an Event Sourcing Micro-framework that utilises EventStoreDB as the event store and uses Entity Framework Core to manage the read database.
+
+## Motivations
+
 MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical.
 
-# License
+## Running the Todo list sample application
+
+*Work in progress*
+
+## Getting Started
+
+The (micro-)framework is still under development and is still in its early stage, thus the packages have not been published for public use. However, the source code is available via this repository. Both MiniESS.Projection and MiniESS.Core are required for the full event sourcing functionality.
+
+For a full working example with React frontend, see MiniESS.Todo project.
+
+To use MiniESS, you will need the register the following services.
+
+```cs
+builder.Services.AddEventSourcing(option =>
+{
+    option.ConnectionString = eventStoreDbConnStr; 
+    option.SerializableAssemblies = eventStoreSerializationAssemblies;
+});
+
+builder.Services.AddProjectionService(option =>
+{
+    option.ConnectionString = eventStoreDbConnStr;
+    option.SerializableAssemblies = eventStoreSerializationAssemblies;
+});
+```
+
+`SerializableAssemblies` are the assemblies of the domain events that will need to be serialized.
+`AddProjectionService` will enable the background service that manages projections from new events.
+
+Note: you will need to configure EF Core dbcontext yourself, like the following
+
+```cs
+builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MiniEssDb")));
+```
+
+### Write Models
+
+In MiniESS, write models inherits from the `BaseAggregateRoot<T>` class.
+
+To begin, register your write models with the service collections, this will register the corresponding Aggregate Repository used for persisting write-models.
+
+```cs
+builder.Services.AddEventSourcingRepository<TodoListAggregateRoot>();
+```
+
+Note: A private constructor is required for the framework to be able to hydrate the write-models.
+
+```cs
+public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
+{
+    private TodoListAggregateRoot(Guid streamId) : base(streamId)
+    {
+    }
+
+    private TodoListAggregateRoot(Guid streamId, string title) : base(streamId)
+    {
+        if (title.Length == 0)
+            throw new DomainException("Title cannot be null or empty for a Todo List");
+        
+        AddEvent(new TodoListEvents.TodoListCreated(this, title));
+    }
+
+    ...
+```
+
+When manipulating events, you are required to call the AddEvent method.
+
+```cs
+public void AddTodoItem(string description)
+{
+    var nextItemNumber = TodoItems.Count;
+    AddEvent(new TodoListEvents.TodoItemAdded(this, nextItemNumber, description));
+}
+```
+
+The added/published events are applied the write model via the `Apply(IDomainEvent @event)` method.
+
+```cs
+protected override void Apply(IDomainEvent @event)
+{ 
+    switch (@event)
+    {
+        case TodoListEvents.TodoItemAdded todoItemAdded:
+            TodoItems.Add(TodoItemAggregate.Create(todoItemAdded.ItemNumber, todoItemAdded.Description));
+            break;
+        case TodoListEvents.TodoListCreated todoItemCreated:
+            Title = todoItemCreated.Title;
+            TodoItems = new List<TodoItemAggregate>();
+            break;
+        case TodoListEvents.TodoItemCompleted todoItemCompleted:
+            TodoItems.Single(x => x.ItemNumber == todoItemCompleted.ItemNumber).Complete();
+            break;
+        default:
+            throw new ArgumentOutOfRangeException(nameof(@event));
+    }
+}
+```
+
+Events correlated to the changes to the write models are not published to the EventStoreDb until the write model is persisted via the AggregateRepository.
+
+```cs
+await _repository.PersistAsyncAndAwaitProjection(
+            TodoListAggregateRoot.Create(streamId, request.Title), 
+            cancellationToken);
+```
+
+or
+
+```cs
+await _repository.PersistAsync(
+            TodoListAggregateRoot.Create(streamId, request.Title), 
+            cancellationToken);
+```
+
+See section *"Eventual vs Strong Consistency"* for explanations for the bahaviours of each persisting methods.
+
+## Read Models
+
+In MiniESS, read model projectors inherits from the `ProjectorBase<T>` class.
+
+To begin, register your write models with the service collections, this will register the corresponding projectors used by the framwork.
+
+```cs
+builder.Services.AddProjector<TodoListAggregateRoot, TodoListProjector>();
+```
+
+Next, implement your projector, and the correspoding interfaces for each events your projector needs to handle.
+
+```cs
+public class TodoListProjector :
+    ProjectorBase<TodoListAggregateRoot>,
+    IProject<TodoListEvents.TodoListCreated>,
+    IProject<TodoListEvents.TodoItemAdded>,
+    IProject<TodoListEvents.TodoItemCompleted>
+{
+    public TodoListProjector(
+        TodoDbContext context, 
+        IServiceProvider serviceProvider, 
+        ILogger<TodoListProjector> logger) : base(context, serviceProvider, logger)
+    {
+    }
+
+    ...
+```
+
+Projection is simple, implement the interface. Call the `SaveChangeAsync()` method when done with projecting.
+
+```cs
+public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, CancellationToken token)
+{
+    var todoList = new TodoList
+    {
+        Id = domainEvent.AggregateId,
+        Title = domainEvent.Title,
+        TodoItems = new List<TodoItem>()
+    };
+
+    await Repository<TodoList>().AddAsync(todoList, token);
+    await SaveChangesAsync();
+}
+```
+
+## Considerations
+
+### Eventual vs Strong Consistency
+
+*Work in progress*
+
+## Acknowledgements
+
+*Work in progress*
+
+## License
 
 > MIT License
 >
