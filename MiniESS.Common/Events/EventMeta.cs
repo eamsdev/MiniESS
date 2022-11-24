@@ -1,4 +1,4 @@
-namespace MiniESS.Core.Events;
+namespace MiniESS.Common.Events;
 
 public struct EventMeta
 { 

@@ -2,11 +2,11 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
 using EventStore.Client;
-using MiniESS.Core.Events;
+using MiniESS.Common.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace MiniESS.Core.Serialization;
+namespace MiniESS.Common.Serialization;
 
 public class EventSerializer
 {

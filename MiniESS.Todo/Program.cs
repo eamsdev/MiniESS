@@ -70,6 +70,9 @@ app.MapFallbackToFile("index.html");
 
 app.Run();
 
-public partial class Program
+namespace MiniESS.Todo
 {
+    public partial class Program
+    {
+    }
 }

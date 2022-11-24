@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MiniESS.Common.Events;
 using MiniESS.Core.Events;
 using MiniESS.Projection.Extensions;
 

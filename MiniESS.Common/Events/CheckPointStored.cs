@@ -1,4 +1,4 @@
-namespace MiniESS.Projection.Events;
+namespace MiniESS.Common.Events;
 
 public class CheckPointStored
 {

@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MiniESS.Common.Events;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Events;
 using MoreLinq;

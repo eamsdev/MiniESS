@@ -1,9 +1,9 @@
 using System.Reflection;
 using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
+using MiniESS.Common.Serialization;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Repository;
-using MiniESS.Core.Serialization;
 
 namespace MiniESS.Core;
 

@@ -28,7 +28,7 @@ public class AddTodoListHandler : IRequestHandler<AddTodoListInputModel, AddTodo
         CancellationToken cancellationToken)
     {
         var streamId = Guid.NewGuid();
-        await _repository.PersistAsync(
+        await _repository.PersistAsyncAndAwaitProjection(
             TodoListAggregateRoot.Create(streamId, request.Title), 
             cancellationToken);
 

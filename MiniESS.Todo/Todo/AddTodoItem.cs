@@ -33,7 +33,7 @@ public class AddTodoItemHandler : IRequestHandler<AddTodoItemInputModel, AddTodo
             throw new NotFoundException($"TodoList with stream id {request.TodoListId!.Value} not found.");
         
         todoList.AddTodoItem(request.Description);
-        await _repository.PersistAsync(todoList, cancellationToken);
+        await _repository.PersistAsyncAndAwaitProjection(todoList, cancellationToken);
 
         return new AddTodoItemResponseModel
         {

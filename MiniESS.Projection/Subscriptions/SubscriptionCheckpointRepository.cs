@@ -1,8 +1,8 @@
 using System.Text;
 using EventStore.Client;
+using MiniESS.Common.Events;
+using MiniESS.Common.Serialization;
 using MiniESS.Core.Repository;
-using MiniESS.Core.Serialization;
-using MiniESS.Projection.Events;
 using Newtonsoft.Json;
 
 namespace MiniESS.Projection.Subscriptions;

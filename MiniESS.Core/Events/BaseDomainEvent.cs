@@ -1,3 +1,4 @@
+using MiniESS.Common.Events;
 using MiniESS.Core.Aggregate;
 
 namespace MiniESS.Core.Events;

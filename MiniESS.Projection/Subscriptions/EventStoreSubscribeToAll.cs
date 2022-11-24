@@ -1,9 +1,9 @@
 using EventStore.Client;
 using Microsoft.Extensions.Logging;
+using MiniESS.Common.Events;
+using MiniESS.Common.Serialization;
 using MiniESS.Core.Events;
-using MiniESS.Core.Serialization;
 using MiniESS.Projection.Projections;
-using MiniESS.Projection.Events;
 using Newtonsoft.Json;
 using Polly;
 

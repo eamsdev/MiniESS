@@ -33,7 +33,7 @@ public class CompleteTodoItemHandler : IRequestHandler<CompleteTodoItemInputMode
             throw new NotFoundException($"TodoList with stream id {request.TodoListId!.Value} not found.");
         
         todoList.CompleteTodoItem(request.TodoItemId!.Value);
-        await _repository.PersistAsync(todoList, cancellationToken);
+        await _repository.PersistAsyncAndAwaitProjection(todoList, cancellationToken);
 
         return new CompleteTodoItemResponseModel
         {

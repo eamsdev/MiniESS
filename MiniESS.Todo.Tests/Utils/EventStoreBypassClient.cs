@@ -1,6 +1,6 @@
 ﻿using EventStore.Client;
+using MiniESS.Common.Serialization;
 using MiniESS.Core.Repository;
-using MiniESS.Core.Serialization;
 using MiniESS.Projection.Projections;
 using SD.Tools.Algorithmia.GeneralDataStructures;
 

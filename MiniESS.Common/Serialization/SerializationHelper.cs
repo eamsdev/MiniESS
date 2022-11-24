@@ -1,9 +1,9 @@
 using System.Text;
 using EventStore.Client;
-using MiniESS.Core.Events;
+using MiniESS.Common.Events;
 using Newtonsoft.Json;
 
-namespace MiniESS.Core.Serialization;
+namespace MiniESS.Common.Serialization;
 
 public static class SerializationHelper
 {
