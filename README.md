@@ -18,7 +18,7 @@ Run `docker-compose -f docker-compose.db-only.yml up`, navigate to `localhost:80
 
 ![image demo](./example.png)
 
-You can navigate to `localhost:2113` to interact with EventStoreDB Ui
+You can navigate to `localhost:2113` to interact with EventStoreDB UI
 
 ## Getting Started
 
@@ -191,6 +191,8 @@ public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, Cance
 ### Snapshots
 
 *Work in progress*
+
+## Further Improvements
 
 ## Acknowledgements
 
