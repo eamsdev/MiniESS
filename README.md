@@ -14,7 +14,7 @@ Or if you want to run the application from the IDE or from host machine
 
 Run `docker-compose -f docker-compose.db-only.yml up`, navigate to `localhost:8090`
 
-![image info](./todo_example.png)
+![image info](./example.png)
 
 You can navigate to `localhost:2113` to interact with EventStoreDB Ui
 
@@ -51,7 +51,7 @@ builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(bui
 
 ### Write Models
 
-In MiniESS, write models inherits from the `BaseAggregateRoot<T>` class.
+With MiniESS, write models inherits from the `BaseAggregateRoot<T>` class.
 
 To begin, register your write models with the service collections, this will register the corresponding Aggregate Repository used for persisting write-models.
 
@@ -132,7 +132,7 @@ See section *"Eventual vs Strong Consistency"* for explanations for the bahaviou
 
 ## Read Models
 
-In MiniESS, read model projectors inherits from the `ProjectorBase<T>` class.
+With MiniESS, read model projectors inherits from the `ProjectorBase<T>` class.
 
 To begin, register your write models with the service collections, this will register the corresponding projectors used by the framwork.
 
