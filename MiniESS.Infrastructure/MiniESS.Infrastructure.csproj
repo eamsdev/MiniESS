@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MiniESS.Core\MiniESS.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EventStore.Client.Grpc" Version="22.0.0" />
+      <PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>

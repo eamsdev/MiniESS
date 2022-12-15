@@ -3,8 +3,7 @@ using Hellang.Middleware.ProblemDetails;
 using Hellang.Middleware.ProblemDetails.Mvc;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MiniESS.Core;
-using MiniESS.Projection;
+using MiniESS.Infrastructure;
 using MiniESS.Todo.Configuration;
 using MiniESS.Todo.Exceptions;
 using MiniESS.Todo.Todo.ReadModels;
@@ -32,12 +31,7 @@ builder.Services.AddEventSourcing(option =>
 {
     option.ConnectionString = eventStoreDbConnStr;
     option.SerializableAssemblies = eventStoreSerializationAssemblies;
-});
-builder.Services.AddProjectionService(option =>
-{
-    option.ConnectionString = eventStoreDbConnStr;
-    option.SerializableAssemblies = eventStoreSerializationAssemblies;
-});
+}).AddProjectionService();
 builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MiniEssDb")));
 builder.Services.AddProjector<TodoListAggregateRoot, TodoListProjector>();
 

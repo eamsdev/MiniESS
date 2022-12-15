@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using MiniESS.Core.Repository;
+using MiniESS.Infrastructure.Repository;
 using MiniESS.Todo.Exceptions;
 using MiniESS.Todo.Todo.WriteModels;
 

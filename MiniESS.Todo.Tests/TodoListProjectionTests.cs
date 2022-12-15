@@ -2,8 +2,8 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MiniESS.Projection;
-using MiniESS.Projection.Projections;
+using MiniESS.Core.Projections;
+using MiniESS.Infrastructure;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
@@ -19,11 +19,12 @@ public class TodoListProjectionTests
     public TodoListProjectionTests()
     {
         var serviceProvider = new ServiceCollection()
-            .AddProjectionService(option =>
+            .AddEventSourcing(option =>
             {
                 option.ConnectionString = "dont care lol";
                 option.SerializableAssemblies = new List<Assembly> { typeof(TodoListAggregateRoot).Assembly };
             })
+            .AddProjectionService()
             .UseStubbedEventStoreSubscriberAndInMemoryDbContext()
             .AddProjector<TodoListAggregateRoot, TodoListProjector>()
             .BuildServiceProvider();

@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MiniESS.Core.Repository;
-using MiniESS.Projection.Workers;
+using MiniESS.Infrastructure.Repository;
+using MiniESS.Infrastructure.Workers;
 using MiniESS.Todo.Todo.ReadModels;
 
 namespace MiniESS.Todo.Tests.Utils;

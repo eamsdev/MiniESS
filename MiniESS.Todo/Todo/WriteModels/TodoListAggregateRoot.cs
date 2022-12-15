@@ -1,5 +1,4 @@
-﻿using MiniESS.Common.Events;
-using MiniESS.Core.Aggregate;
+﻿using MiniESS.Core.Aggregate;
 using MiniESS.Core.Events;
 using MiniESS.Todo.Exceptions;
 

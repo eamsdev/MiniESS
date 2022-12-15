@@ -16,12 +16,12 @@ RUN npm install -g yarn
 WORKDIR /src
 COPY ["MiniESS.Todo/MiniESS.Todo.csproj", "MiniESS.Todo/"]
 COPY ["MiniESS.Core/MiniESS.Core.csproj", "MiniESS.Core/"]
-COPY ["MiniESS.Projection/MiniESS.Projection.csproj", "MiniESS.Projection/"]
+COPY ["MiniESS.Infrastructure/MiniESS.Infrastructure.csproj", "MiniESS.Infrastructure/"]
 
 # restore dependencies
 RUN dotnet restore "MiniESS.Todo/MiniESS.Todo.csproj"
 RUN dotnet restore "MiniESS.Core/MiniESS.Core.csproj"
-RUN dotnet restore "MiniESS.Projection/MiniESS.Projection.csproj"
+RUN dotnet restore "MiniESS.Infrastructure/MiniESS.Infrastructure.csproj"
 COPY . .
 WORKDIR "/src/MiniESS.Todo"
 RUN dotnet build "MiniESS.Todo.csproj" -c Release

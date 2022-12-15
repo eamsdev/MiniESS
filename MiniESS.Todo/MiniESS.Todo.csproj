@@ -47,8 +47,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MiniESS.Core\MiniESS.Core.csproj" />
-      <ProjectReference Include="..\MiniESS.Projection\MiniESS.Projection.csproj" />
+      <ProjectReference Include="..\MiniESS.Infrastructure\MiniESS.Infrastructure.csproj" />
     </ItemGroup>
     
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

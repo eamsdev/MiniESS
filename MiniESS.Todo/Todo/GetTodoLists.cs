@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MiniESS.Core.Repository;
+using MiniESS.Infrastructure.Repository;
 using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 

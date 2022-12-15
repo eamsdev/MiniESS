@@ -1,13 +1,12 @@
-﻿using EventStore.Client;
+using EventStore.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MiniESS.Infrastructure.Repository;
 using MiniESS.Infrastructure.Subscriptions;
 using MiniESS.Subscription.Tests.Models;
-using MiniESS.Todo.Todo.ReadModels;
 
-namespace MiniESS.Todo.Tests;
+namespace MiniESS.Subscription.Tests.Extensions;
 
 public static class DependencyInjection
 {
@@ -16,10 +15,10 @@ public static class DependencyInjection
         return services
             .RemoveAll<IEventStoreClient>()
             .RemoveAll<EventStoreClient>()
-            .AddSingleton<IEventStoreClient, FakeEventStoreClientAdaptor>()
+            .AddScoped<IEventStoreClient, FakeEventStoreClientAdaptor>()
             .RemoveAll<IEventStoreSubscriber>()
             .RemoveAll<EventStoreSubscriber>()
-            .AddDbContext<TodoDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("ProjectionTests"))
-            .AddSingleton<IEventStoreSubscriber, FakeEventStoreSubscriber>();
+            .AddDbContext<DummyDbContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("ProjectionTests"))
+            .AddScoped<IEventStoreSubscriber, FakeEventStoreSubscriber>();
     }
 }

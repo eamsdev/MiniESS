@@ -1,19 +1,19 @@
 ﻿using EventStore.Client;
-using MiniESS.Common.Serialization;
-using MiniESS.Core.Repository;
-using MiniESS.Projection.Projections;
+using MiniESS.Core.Projections;
+using MiniESS.Infrastructure.Repository;
+using MiniESS.Infrastructure.Serialization;
 using SD.Tools.Algorithmia.GeneralDataStructures;
 
 namespace MiniESS.Todo.Tests.Utils;
 
 public class EventStoreBypassClient : IEventStoreClient
 {
-    private readonly EventSerializer _serializer;
+    private readonly EventStoreDbSerializer _serializer;
     private readonly ProjectionOrchestrator _orchestrator;
     private readonly MultiValueDictionary<string, (EventData Data, StreamRevision Revision)> _eventsRecord;
 
     public EventStoreBypassClient(
-        EventSerializer serializer, 
+        EventStoreDbSerializer serializer, 
         ProjectionOrchestrator orchestrator)
     {
         _serializer = serializer;
