@@ -8,7 +8,7 @@ using SD.Tools.Algorithmia.GeneralDataStructures;
 
 namespace MiniESS.Infrastructure.Projections;
 
-public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>, IUnitOfWork
+public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
     where TAggregateRoot : class, IAggregateRoot
 {
     private readonly DbContext _context;
@@ -42,8 +42,7 @@ public abstract class ProjectorBase<TAggregateRoot> : IProjector<TAggregateRoot>
     private MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>> CreateHandlers()
     {
         var result = new MultiValueDictionary<Type, Func<IDomainEvent, CancellationToken, Task>>();
-        var actions = GetApplyDelegates();
-        MoreEnumerable.ForEach(actions, x => result.Add(x.Type, x.Delegate));
+        GetApplyDelegates().ForEach(x => result.Add(x.Type, x.Delegate));
         return result;
     }
 
