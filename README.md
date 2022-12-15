@@ -35,13 +35,7 @@ builder.Services.AddEventSourcing(option =>
 {
     option.ConnectionString = eventStoreDbConnStr; 
     option.SerializableAssemblies = eventStoreSerializationAssemblies;
-});
-
-builder.Services.AddProjectionService(option =>
-{
-    option.ConnectionString = eventStoreDbConnStr;
-    option.SerializableAssemblies = eventStoreSerializationAssemblies;
-});
+}).AddProjectionService();
 ```
 
 `SerializableAssemblies` are the assemblies of the domain events that need to be serialized.
