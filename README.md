@@ -1,32 +1,34 @@
 # MiniESS
 
-MiniESS is an Event Sourcing Micro-framework that utilises EventStoreDB as the event store and uses Entity Framework Core to manage the read database.
+MiniESS is an Event Sourcing micro-framework that uses EventStoreDB as the event store and Entity Framework Core to manage the read database.
 
 ## Motivations
 
-MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture, as such, its aim was to complete this goal with the smallest amount of code as it is practical. This means using off the shelve products such as EventStoreDB to manage events and events subscriptions.
+MiniESS was created as a learning exercise to understand the internal workings of the event sourcing architecture. It uses off-the-shelf products such as EventStoreDB to manage events and event subscriptions.
 
-![image architecture](./architecture.svg)
+![image architecture](./architecture.png)
 
-## Running the Todo list sample application
+## To run the Todo list sample application:
 
-Run `docker-compose up`, navigate to `localhost:8090`
+1. Run `docker-compose up` 
+2. Navigate to `localhost:8090`
 
-Or if you want to run the application from the IDE or from host machine
+Alternatively, if you want to run the application from the IDE or from the host machine:
 
-Run `docker-compose -f docker-compose.db-only.yml up`, navigate to `localhost:8090`
+1. Run `docker-compose -f docker-compose.db-only.yml up`.
+2. `Navigate to localhost:8090`.
 
 ![image demo](./example.png)
 
-You can navigate to `localhost:2113` to interact with EventStoreDB UI
+You can also navigate to `localhost:2113` to interact with the EventStoreDB UI.
 
 ## Getting Started
 
-The (micro-)framework is still under development and is still in its early stage, thus the packages have not been published for public use. However, the source code is available via this repository. Both MiniESS.Projection and MiniESS.Core are required for the full event sourcing functionality.
+The (micro-)framework is still under development and is in its early stages, so the packages have not yet been published for public use. However, the source code is available in this repository. Both `MiniESS.Projection` and `MiniESS.Core` are required for full event sourcing functionality.
 
-For a full working example with React frontend, see MiniESS.Todo project.
+For a full working example with a React frontend, see the `MiniESS.Todo` project.
 
-To use MiniESS, you will need the register the following services.
+To use MiniESS, you need to register the following services:
 
 ```cs
 builder.Services.AddEventSourcing(option =>
@@ -42,10 +44,10 @@ builder.Services.AddProjectionService(option =>
 });
 ```
 
-`SerializableAssemblies` are the assemblies of the domain events that will need to be serialized.
-`AddProjectionService` will enable the background service that manages projections from new events.
+`SerializableAssemblies` are the assemblies of the domain events that need to be serialized.
+`AddProjectionService` enables the background service that manages projections from new events.
 
-Note: you will need to configure EF Core dbcontext yourself, like the following
+Note: you need to configure the EF Core DbContext yourself, as shown below:
 
 ```cs
 builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MiniEssDb")));
@@ -55,13 +57,13 @@ builder.Services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(bui
 
 With MiniESS, write models inherits from the `BaseAggregateRoot<T>` class.
 
-To begin, register your write models with the service collections, this will register the corresponding Aggregate Repository used for persisting write-models.
+To begin, register your write models with the service collections. This will register the corresponding Aggregate Repository used for persisting write-models.
 
 ```cs
 builder.Services.AddEventSourcingRepository<TodoListAggregateRoot>();
 ```
 
-Note: A private constructor with an argument `Guid streamId` is required for the framework to be able to create and rehydrate the write-models.
+Note: A private constructor with an argument `Guid streamId` is required for the framework to create and rehydrate the write-models.
 
 ```cs
 public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
@@ -81,7 +83,7 @@ public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
     ...
 ```
 
-When manipulating events, you are required to call the AddEvent method.
+When manipulating events, you need to call the `AddEvent` method.
 
 ```cs
 public void AddTodoItem(string description)
@@ -91,7 +93,7 @@ public void AddTodoItem(string description)
 }
 ```
 
-The added/published events are applied the write model via the `Apply(IDomainEvent @event)` method.
+The added/published events are applied to the write model via the `Apply(IDomainEvent @event)` method.
 
 ```cs
 protected override void Apply(IDomainEvent @event)
@@ -130,19 +132,17 @@ await _repository.PersistAsync(
             cancellationToken);
 ```
 
-See section *"Eventual vs Strong Consistency"* for explanations for the bahaviours of each persisting methods.
-
 ## Read Models
 
-With MiniESS, read model projectors inherits from the `ProjectorBase<T>` class.
+With MiniESS, read model projectors inherit from the `ProjectorBase<T>` class.
 
-To begin, register your write models with the service collections, this will register the corresponding projectors used by the framework.
+To begin, register your write models with the service collections. This will register the corresponding projectors used by the framework.
 
 ```cs
 builder.Services.AddProjector<TodoListAggregateRoot, TodoListProjector>();
 ```
 
-Next, implement your projector, and the correspoding interfaces for each events your projector needs to handle.
+Next, implement your projector, and the corresponding interfaces for each event that your projector needs to handle.
 
 ```cs
 public class TodoListProjector :
@@ -161,7 +161,7 @@ public class TodoListProjector :
     ...
 ```
 
-Projection is simple, implement the interface. Call the `SaveChangeAsync()` method when done with projecting.
+Projection is simple: implement the interface and call the `SaveChangeAsync()` method when done projecting.
 
 ```cs
 public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, CancellationToken token)
@@ -177,22 +177,6 @@ public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, Cance
     await SaveChangesAsync();
 }
 ```
-
-## Considerations
-
-### Eventual vs Strong Consistency
-
-*Work in progress*
-
-### Catch up projections
-
-*Work in progress*
-
-### Snapshots
-
-*Work in progress*
-
-## Further Improvements
 
 ## Acknowledgements
 
