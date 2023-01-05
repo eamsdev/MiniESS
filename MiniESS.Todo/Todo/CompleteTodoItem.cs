@@ -1,7 +1,10 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Infrastructure.Repository;
 using MiniESS.Todo.Exceptions;
+using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
 namespace MiniESS.Todo.Todo;
@@ -20,21 +23,26 @@ public class CompleteTodoItemResponseModel
 
 public class CompleteTodoItemHandler : IRequestHandler<CompleteTodoItemInputModel, CompleteTodoItemResponseModel>
 {
-    private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+    private readonly ReadonlyDbContext _readDb;
+    private readonly CommandProcessor _commandProcessor;
 
-    public CompleteTodoItemHandler(IAggregateRepository<TodoListAggregateRoot> repository)
+    public CompleteTodoItemHandler(ReadonlyDbContext readDb, CommandProcessor commandProcessor)
     {
-        _repository = repository;
+        _readDb = readDb;
+        _commandProcessor = commandProcessor;
     }
 
     public async Task<CompleteTodoItemResponseModel> Handle(CompleteTodoItemInputModel request, CancellationToken cancellationToken)
     {
-        var todoList = await _repository.LoadAsync(request.TodoListId!.Value, cancellationToken);
+        var todoList = await _readDb
+            .Set<ReadModels.TodoList>()
+            .Include(x => x.TodoItems)
+            .SingleOrDefaultAsync(x => x.Id == request.TodoListId, cancellationToken: cancellationToken);
+        
         if (todoList is null)
             throw new NotFoundException($"TodoList with stream id {request.TodoListId!.Value} not found.");
-        
-        todoList.CompleteTodoItem(request.TodoItemId!.Value);
-        await _repository.PersistAsyncAndAwaitProjection(todoList, cancellationToken);
+
+        await _commandProcessor.ProcessAndCommit(new TodoListCommands.CompleteTodoItem(todoList.Id, request.TodoItemId.Value), cancellationToken);
 
         return new CompleteTodoItemResponseModel
         {

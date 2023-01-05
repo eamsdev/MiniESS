@@ -7,7 +7,7 @@
 public class TodoListAggregateTests
 {
     private const string Title = "Title";
-    
+
     [Fact]
     public void CanCreateAggregateTest()
     {

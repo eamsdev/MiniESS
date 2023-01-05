@@ -6,14 +6,33 @@ using MiniESS.Core.Events;
 
 namespace MiniESS.Subscription.Tests.Models;
 
-public class CreateDummy : ICommand<Dummy>
+public class CreateDummy : BaseCommand<Dummy>
 {
-    public Guid AggregateId { get; init; }
+    public CreateDummy(Guid aggregateId) : base(aggregateId)
+    { }
+}
+
+public class SetDummyFlag : BaseCommand<Dummy>
+{
+    public SetDummyFlag(Guid aggregateId, bool flag) : base(aggregateId)
+    {
+        Flag = flag;
+    }
+    
+    public bool Flag { get; }
+}
+
+public class IncrementDummyCount : BaseCommand<Dummy>
+{   public IncrementDummyCount(Guid aggregateId) : base(aggregateId)
+    { }
+    
 }
 
 public class Dummy : 
     BaseAggregateRoot<Dummy>,
-    IHandleCommand<CreateDummy>
+    IHandleCommand<CreateDummy>,
+    IHandleCommand<SetDummyFlag>,
+    IHandleCommand<IncrementDummyCount>
 {
     public bool Flag { get; set; }
     public int Count { get; set; }
@@ -56,6 +75,18 @@ public class Dummy :
     public void Handle(CreateDummy command)
     {
         AddEvent(new DummyEvents.DummyCreated(this));
+    }
+
+    public void Handle(SetDummyFlag command)
+    {
+        Flag = command.Flag;
+        AddEvent(new DummyEvents.SetFlag(this, Flag)); 
+    }
+
+    public void Handle(IncrementDummyCount command)
+    {
+        Count++;
+        AddEvent(new DummyEvents.IncrementCounter(this)); 
     }
 }
 

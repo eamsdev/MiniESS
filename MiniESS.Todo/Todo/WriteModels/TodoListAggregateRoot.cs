@@ -1,10 +1,48 @@
 ﻿using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Core.Events;
 using MiniESS.Todo.Exceptions;
 
 namespace MiniESS.Todo.Todo.WriteModels;
 
-public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
+public static class TodoListCommands
+{
+    public class Create : BaseCommand<TodoListAggregateRoot>
+    {
+        public Create(Guid aggregateId, string title) : base(aggregateId)
+        {
+            Title = title;
+        }
+
+        public string Title { get; }
+    }
+    
+    public class AddTodoItem : BaseCommand<TodoListAggregateRoot>
+    {
+        public AddTodoItem(Guid aggregateId, string description) : base(aggregateId)
+        {
+            Description = description;
+        }
+
+        public string Description { get; }
+    }
+    
+    public class CompleteTodoItem : BaseCommand<TodoListAggregateRoot>
+    {
+        public CompleteTodoItem(Guid aggregateId, int itemNumber) : base(aggregateId)
+        {
+            ItemNumber = itemNumber;
+        }
+
+        public int ItemNumber { get; }
+    }
+}
+
+public class TodoListAggregateRoot : 
+    BaseAggregateRoot<TodoListAggregateRoot>,
+    IHandleCommand<TodoListCommands.Create>,
+    IHandleCommand<TodoListCommands.AddTodoItem>,
+    IHandleCommand<TodoListCommands.CompleteTodoItem>
 {
     private TodoListAggregateRoot(Guid streamId) : base(streamId)
     {
@@ -59,6 +97,28 @@ public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
             default:
                 throw new ArgumentOutOfRangeException(nameof(@event));
         }
+    }
+
+    public void Handle(TodoListCommands.Create command)
+    {
+        if (command.Title.Length == 0)
+            throw new DomainException("Title cannot be null or empty for a Todo List");
+        
+        
+        AddEvent(new TodoListEvents.TodoListCreated(this, command.Title));
+    }
+
+    public void Handle(TodoListCommands.AddTodoItem command)
+    {
+        AddEvent(new TodoListEvents.TodoItemAdded(this, TodoItems.Count, command.Description));
+    }
+
+    public void Handle(TodoListCommands.CompleteTodoItem command)
+    {
+        var toBeCompleted = TodoItems.SingleOrDefault(x => x.ItemNumber == command.ItemNumber) 
+                            ?? throw new DomainException("Todo item does not exist in the todo list.");
+        
+        AddEvent(new TodoListEvents.TodoItemCompleted(this, command.ItemNumber));
     }
 }
 

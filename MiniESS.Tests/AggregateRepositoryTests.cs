@@ -39,14 +39,44 @@ public class AggregateRepositoryTests
     }
 
     [Fact]
-    public async void TestCommandProcessor()
+    public async void CanCreateNewAggregateViaCommandProcessor()
     {
-        var command = new CreateDummy()
-        {
-            AggregateId = Guid.NewGuid()
-        };
-
-        await _commandProcessor.ProcessAndCommit(command, CancellationToken.None);
+        // Arrange
+        var streamId = Guid.NewGuid();
+        
+        // Act
+        await _commandProcessor.ProcessAndCommit(
+            new CreateDummy(streamId), CancellationToken.None);
+        
+        // Assert
+        var hydratedDummy = await _dummyAggregateRepository.LoadAsync(streamId, CancellationToken.None);
+        hydratedDummy.Should().NotBeNull();
+        hydratedDummy!.Count.Should().Be(0);
+        hydratedDummy.Flag.Should().BeFalse();
+    }
+    
+    [Fact]
+    public async void CanAddSubsequentCommandsToExistingAggregate()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid();
+        await _commandProcessor.ProcessAndCommit(
+            new CreateDummy(streamId), 
+            CancellationToken.None);
+        
+        // Act
+        await _commandProcessor.ProcessAndCommit(
+            new IncrementDummyCount(streamId), CancellationToken.None);
+        await _commandProcessor.ProcessAndCommit(
+            new IncrementDummyCount(streamId), CancellationToken.None);
+        await _commandProcessor.ProcessAndCommit(
+            new SetDummyFlag(streamId, true), CancellationToken.None);
+        
+        // Assert
+        var hydratedDummy = await _dummyAggregateRepository.LoadAsync(streamId, CancellationToken.None);
+        hydratedDummy.Should().NotBeNull();
+        hydratedDummy!.Count.Should().Be(2);
+        hydratedDummy.Flag.Should().BeTrue();
     }
 
     [Fact]

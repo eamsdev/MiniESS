@@ -14,7 +14,6 @@ public class CommandProcessor
     
     public async Task ProcessAndCommit<T>(ICommand<T> command, CancellationToken cancellationToken) where T : class, IAggregateRoot
     {
-        // TODO:
         // 1. Get Aggregate Type -> typeof(T)
         // 2. Resolve Aggregate Repository from Service Provider 
         var aggregateRepositoryType = typeof(IAggregateRepository<>).MakeGenericType(typeof(T));

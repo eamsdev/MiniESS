@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Infrastructure.Repository;
+using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
 namespace MiniESS.Todo.Todo;
@@ -17,11 +19,13 @@ public class AddTodoListResponseModel
 
 public class AddTodoListHandler : IRequestHandler<AddTodoListInputModel, AddTodoListResponseModel>
 {
-    private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+    private readonly ReadonlyDbContext _readDb;
+    private readonly CommandProcessor _commandProcessor;
 
-    public AddTodoListHandler(IAggregateRepository<TodoListAggregateRoot> repository)
+    public AddTodoListHandler(ReadonlyDbContext readDb, CommandProcessor commandProcessor)
     {
-        _repository = repository;
+        _readDb = readDb;
+        _commandProcessor = commandProcessor;
     }
     
     public async Task<AddTodoListResponseModel> Handle(
@@ -29,8 +33,8 @@ public class AddTodoListHandler : IRequestHandler<AddTodoListInputModel, AddTodo
         CancellationToken cancellationToken)
     {
         var streamId = Guid.NewGuid();
-        await _repository.PersistAsyncAndAwaitProjection(
-            TodoListAggregateRoot.Create(streamId, request.Title), 
+        await _commandProcessor.ProcessAndCommit(
+            new TodoListCommands.Create(streamId, request.Title), 
             cancellationToken);
 
         return new AddTodoListResponseModel { CreatedTodoListId = streamId };

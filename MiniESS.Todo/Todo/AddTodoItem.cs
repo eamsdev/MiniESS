@@ -1,7 +1,10 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Infrastructure.Repository;
 using MiniESS.Todo.Exceptions;
+using MiniESS.Todo.Todo.ReadModels;
 using MiniESS.Todo.Todo.WriteModels;
 
 namespace MiniESS.Todo.Todo;
@@ -20,26 +23,36 @@ public class AddTodoItemResponseModel
 
 public class AddTodoItemHandler : IRequestHandler<AddTodoItemInputModel, AddTodoItemResponseModel>
 {
-    private readonly IAggregateRepository<TodoListAggregateRoot> _repository;
+    private readonly ReadonlyDbContext _readDb;
+    private readonly CommandProcessor _commandProcessor;
 
-    public AddTodoItemHandler(IAggregateRepository<TodoListAggregateRoot> repository)
+    public AddTodoItemHandler(ReadonlyDbContext readDb, CommandProcessor commandProcessor)
     {
-        _repository = repository;
+        _readDb = readDb;
+        _commandProcessor = commandProcessor;
     }
 
     public async Task<AddTodoItemResponseModel> Handle(AddTodoItemInputModel request, CancellationToken cancellationToken)
     {
-        var todoList = await _repository.LoadAsync(request.TodoListId!.Value, cancellationToken);
+        var todoList = await _readDb
+            .Set<ReadModels.TodoList>()
+            .SingleOrDefaultAsync(x => x.Id == request.TodoListId, cancellationToken: cancellationToken);
+        
         if (todoList is null)
             throw new NotFoundException($"TodoList with stream id {request.TodoListId!.Value} not found.");
-        
-        todoList.AddTodoItem(request.Description);
-        await _repository.PersistAsyncAndAwaitProjection(todoList, cancellationToken);
 
+        var addTodoItemCommand = new TodoListCommands.AddTodoItem(todoList.Id, request.Description);
+        await _commandProcessor.ProcessAndCommit(addTodoItemCommand, cancellationToken);
+        
+        todoList = await _readDb
+            .Set<ReadModels.TodoList>()
+            .Include(x => x.TodoItems)
+            .SingleAsync(x => x.Id == request.TodoListId, cancellationToken: cancellationToken);
+        
         return new AddTodoItemResponseModel
         {
-            TodoListId = todoList.StreamId,
-            CreatedTodoItemId = todoList.TodoItems.Last().ItemNumber
+            TodoListId = todoList.Id,
+            CreatedTodoItemId = todoList.TodoItems.Last().ItemNumber, 
         };
     }
 }
