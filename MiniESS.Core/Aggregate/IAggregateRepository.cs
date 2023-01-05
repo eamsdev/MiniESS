@@ -1,11 +1,8 @@
-using EventStore.Client;
-using MiniESS.Core.Aggregate;
-
-namespace MiniESS.Infrastructure.Repository;
+namespace MiniESS.Core.Aggregate;
 
 public interface IAggregateRepository<TAggregateRoot> where TAggregateRoot : class, IAggregateRoot
 {
-   Task<IWriteResult?> PersistAsync(TAggregateRoot aggregateRoot, CancellationToken token);
+   Task<ulong?> PersistAsync(TAggregateRoot aggregateRoot, CancellationToken token);
    
    Task PersistAsyncAndAwaitProjection(TAggregateRoot aggregateRoot, CancellationToken token);
 

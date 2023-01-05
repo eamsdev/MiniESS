@@ -1,10 +1,19 @@
 using System;
+using System.Threading.Tasks;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Core.Events;
 
 namespace MiniESS.Subscription.Tests.Models;
 
-public class Dummy : BaseAggregateRoot<Dummy>
+public class CreateDummy : ICommand<Dummy>
+{
+    public Guid AggregateId { get; init; }
+}
+
+public class Dummy : 
+    BaseAggregateRoot<Dummy>,
+    IHandleCommand<CreateDummy>
 {
     public bool Flag { get; set; }
     public int Count { get; set; }
@@ -42,6 +51,11 @@ public class Dummy : BaseAggregateRoot<Dummy>
     public static Dummy Create(Guid streamId)
     {
         return new Dummy(streamId);
+    }
+
+    public void Handle(CreateDummy command)
+    {
+        AddEvent(new DummyEvents.DummyCreated(this));
     }
 }
 

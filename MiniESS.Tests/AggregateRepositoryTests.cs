@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Infrastructure;
 using MiniESS.Infrastructure.Repository;
 using MiniESS.Subscription.Tests.Extensions;
@@ -15,6 +17,7 @@ namespace MiniESS.Subscription.Tests;
 public class AggregateRepositoryTests
 {
     private readonly IAggregateRepository<Dummy> _dummyAggregateRepository;
+    private readonly CommandProcessor _commandProcessor;
 
     public AggregateRepositoryTests()
     {
@@ -30,6 +33,20 @@ public class AggregateRepositoryTests
 
         _dummyAggregateRepository = serviceProvider.GetService(typeof(IAggregateRepository<Dummy>)) as IAggregateRepository<Dummy> 
                                     ?? throw new InvalidOperationException();
+        
+        _commandProcessor = serviceProvider.GetService(typeof(CommandProcessor)) as CommandProcessor 
+                                    ?? throw new InvalidOperationException();
+    }
+
+    [Fact]
+    public async void TestCommandProcessor()
+    {
+        var command = new CreateDummy()
+        {
+            AggregateId = Guid.NewGuid()
+        };
+
+        await _commandProcessor.ProcessAndCommit(command, CancellationToken.None);
     }
 
     [Fact]

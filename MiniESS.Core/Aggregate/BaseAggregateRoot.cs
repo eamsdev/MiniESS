@@ -45,7 +45,12 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
         if (null == CTor)
             throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(Guid)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
     }
-        
+
+    public static TAggregateRoot Create(Guid key)
+    {
+        return (TAggregateRoot) CTor.Invoke(new object [] { key });
+    }
+
     public static TAggregateRoot Create(Guid key, IEnumerable<IDomainEvent> events)
     {
         var domainEvents = events as IDomainEvent[] ?? events.ToArray();

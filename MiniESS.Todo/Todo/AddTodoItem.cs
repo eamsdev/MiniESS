@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MiniESS.Core.Aggregate;
 using MiniESS.Infrastructure.Repository;
 using MiniESS.Todo.Exceptions;
 using MiniESS.Todo.Todo.WriteModels;
