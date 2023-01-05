@@ -32,7 +32,10 @@ public class Dummy :
     BaseAggregateRoot<Dummy>,
     IHandleCommand<CreateDummy>,
     IHandleCommand<SetDummyFlag>,
-    IHandleCommand<IncrementDummyCount>
+    IHandleCommand<IncrementDummyCount>,
+    IHandleEvent<DummyEvents.DummyCreated>,
+    IHandleEvent<DummyEvents.IncrementCounter>,
+    IHandleEvent<DummyEvents.SetFlag>
 {
     public bool Flag { get; set; }
     public int Count { get; set; }
@@ -52,21 +55,6 @@ public class Dummy :
         AddEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
-    protected override void Apply(IDomainEvent @event)
-    {
-        switch (@event)
-        {
-            case DummyEvents.DummyCreated dc:
-                break;
-            case DummyEvents.IncrementCounter ic:
-                Count++;
-                break;
-            case DummyEvents.SetFlag sf:
-                Flag = sf.Flag;
-                break;
-        }
-    }
-
     public static Dummy Create(Guid streamId)
     {
         return new Dummy(streamId);
@@ -79,14 +67,25 @@ public class Dummy :
 
     public void Handle(SetDummyFlag command)
     {
-        Flag = command.Flag;
-        AddEvent(new DummyEvents.SetFlag(this, Flag)); 
+        AddEvent(new DummyEvents.SetFlag(this, command.Flag)); 
     }
 
     public void Handle(IncrementDummyCount command)
     {
-        Count++;
         AddEvent(new DummyEvents.IncrementCounter(this)); 
+    }
+
+    public void Handle(DummyEvents.DummyCreated domainEvent)
+    {}
+
+    public void Handle(DummyEvents.IncrementCounter domainEvent)
+    {
+        Count++;
+    }
+
+    public void Handle(DummyEvents.SetFlag domainEvent)
+    {
+        Flag = domainEvent.Flag;
     }
 }
 

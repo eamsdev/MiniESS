@@ -22,13 +22,11 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     {
         _eventsQueue.Enqueue(@event);
     
-        Apply(@event);
+        ApplyEvent(this, @event);
         
         Version++;
     }
 
-    protected abstract void Apply(IDomainEvent @event);
-   
     /*
      *  Static constructor via reflection to allow subclasses to be created generically
      */
@@ -62,11 +60,19 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
         {
             foreach (var @event in domainEvents)
             {
-                baseAggregate.AddEvent(@event);
+                ApplyEvent(baseAggregate, @event);
             }
         }
         
         result.ClearEvents();
         return result;
+    }
+
+    private static void ApplyEvent(object aggregate, IDomainEvent @event)
+    {
+        var eventHandlerType = typeof(IHandleEvent<>)
+            .MakeGenericType(@event.GetType());
+        var method = eventHandlerType.GetMethod(nameof(IHandleEvent<IDomainEvent>.Handle));
+        method.Invoke(aggregate, new []{ @event });
     }
 }
