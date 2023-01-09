@@ -41,17 +41,17 @@ public class Dummy :
 
     private Dummy(Guid streamId) : base(streamId)
     {
-        AddEvent(new DummyEvents.DummyCreated(this));
+        RaiseEvent(new DummyEvents.DummyCreated(this));
     }
 
     public void SetFlag(bool flag)
     {
-        AddEvent(new DummyEvents.SetFlag(this, flag)); 
+        RaiseEvent(new DummyEvents.SetFlag(this, flag)); 
     }
 
     public void IncrementCount()
     {
-        AddEvent(new DummyEvents.IncrementCounter(this)); 
+        RaiseEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
     public static Dummy Create(Guid streamId)
@@ -61,17 +61,17 @@ public class Dummy :
 
     public void Handle(CreateDummy command)
     {
-        AddEvent(new DummyEvents.DummyCreated(this));
+        RaiseEvent(new DummyEvents.DummyCreated(this));
     }
 
     public void Handle(SetDummyFlag command)
     {
-        AddEvent(new DummyEvents.SetFlag(this, command.Flag)); 
+        RaiseEvent(new DummyEvents.SetFlag(this, command.Flag)); 
     }
 
     public void Handle(IncrementDummyCount command)
     {
-        AddEvent(new DummyEvents.IncrementCounter(this)); 
+        RaiseEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
     public void Handle(DummyEvents.DummyCreated domainEvent)

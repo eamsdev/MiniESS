@@ -18,7 +18,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     
     public void ClearEvents() => _eventsQueue.Clear();
 
-    protected void AddEvent(IDomainEvent @event)
+    protected void RaiseEvent(IDomainEvent @event)
     {
         _eventsQueue.Enqueue(@event);
         
@@ -36,9 +36,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     {
         CTor = typeof(TAggregateRoot).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic, 
-            null, 
-            new []{ typeof(Guid) }, 
-            null);
+            null, new []{ typeof(Guid) }, null);
         
         if (null == CTor)
             throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(Guid)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
@@ -76,5 +74,4 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
         .MakeGenericType(@event.GetType())
         .GetMethod(nameof(IHandleEvent<IDomainEvent>.Handle))!
         .Invoke(aggregate, new []{ @event });
-    
 }

@@ -24,7 +24,7 @@ You can also navigate to `localhost:2113` to interact with the EventStoreDB UI.
 
 ## Getting Started
 
-The (micro-)framework is still under development and is in its early stages, so the packages have not yet been published for public use. However, the source code is available in this repository. Both `MiniESS.Projection` and `MiniESS.Core` are required for full event sourcing functionality.
+The (micro-)framework is still under development and is in its early stages, so the packages have not yet been published for public use. However, the source code is available in this repository. 
 
 For a full working example with a React frontend, see the `MiniESS.Todo` project.
 
@@ -77,53 +77,56 @@ public class TodoListAggregateRoot : BaseAggregateRoot<TodoListAggregateRoot>
     ...
 ```
 
-When manipulating events, you need to call the `AddEvent` method.
+You must implement the `IHandleCommand` and `IHandleEvent` interfaces provided by the framework, to be able to interact with the aggregate:
 
 ```cs
-public void AddTodoItem(string description)
+public class TodoListAggregateRoot : 
+    BaseAggregateRoot<TodoListAggregateRoot>,
+    IHandleCommand<TodoListCommands.Create>,
+    IHandleEvent<TodoListEvents.Created>
 {
-    var nextItemNumber = TodoItems.Count;
-    AddEvent(new TodoListEvents.TodoItemAdded(this, nextItemNumber, description));
-}
-```
+    ...
 
-The added/published events are applied to the write model via the `Apply(IDomainEvent @event)` method.
-
-```cs
-protected override void Apply(IDomainEvent @event)
-{ 
-    switch (@event)
+    public void Handle(TodoListCommands.Create command)
     {
-        case TodoListEvents.TodoItemAdded todoItemAdded:
-            TodoItems.Add(TodoItemAggregate.Create(todoItemAdded.ItemNumber, todoItemAdded.Description));
-            break;
-        case TodoListEvents.TodoListCreated todoItemCreated:
-            Title = todoItemCreated.Title;
-            TodoItems = new List<TodoItemAggregate>();
-            break;
-        case TodoListEvents.TodoItemCompleted todoItemCompleted:
-            TodoItems.Single(x => x.ItemNumber == todoItemCompleted.ItemNumber).Complete();
-            break;
-        default:
-            throw new ArgumentOutOfRangeException(nameof(@event));
+        if (command.Title.Length == 0)
+            throw new DomainException("Title cannot be null or empty for a Todo List");
+        
+        
+        RaiseEvent(new TodoListEvents.Created(this, command.Title));
     }
+
+    ...
+
+    public void Handle(TodoListEvents.Created domainEvent)
+    {
+        Title = domainEvent.Title;
+        TodoItems = new List<TodoItemAggregate>();
+    }
+
+    ...
 }
 ```
 
-Events correlated to the changes to the write models are not published to the EventStoreDb until the write model is persisted via the AggregateRepository.
+Using the above implementation, the client may manipulate an aggregate using the command processor:
 
 ```cs
-await _repository.PersistAsyncAndAwaitProjection(
-            TodoListAggregateRoot.Create(streamId, request.Title), 
-            cancellationToken);
-```
+public AddTodoListHandler(CommandProcessor commandProcessor)
+{
+    _commandProcessor = commandProcessor;
+}
 
-or
+public async Task<AddTodoListResponseModel> Handle(
+    AddTodoListInputModel request, 
+    CancellationToken cancellationToken)
+{
+    var streamId = Guid.NewGuid();
+    await _commandProcessor.ProcessAndCommit(
+        new TodoListCommands.Create(streamId, request.Title), 
+        cancellationToken);
 
-```cs
-await _repository.PersistAsync(
-            TodoListAggregateRoot.Create(streamId, request.Title), 
-            cancellationToken);
+    return new AddTodoListResponseModel { CreatedTodoListId = streamId };
+}
 ```
 
 ## Read Models

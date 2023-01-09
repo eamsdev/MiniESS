@@ -60,12 +60,12 @@ public class TodoListAggregateRoot :
             throw new DomainException("Title cannot be null or empty for a Todo List");
         
         
-        AddEvent(new TodoListEvents.TodoListCreated(this, command.Title));
+        RaiseEvent(new TodoListEvents.TodoListCreated(this, command.Title));
     }
 
     public void Handle(TodoListCommands.AddTodoItem command)
     {
-        AddEvent(new TodoListEvents.TodoItemAdded(this, TodoItems.Count, command.Description));
+        RaiseEvent(new TodoListEvents.TodoItemAdded(this, TodoItems.Count, command.Description));
     }
 
     public void Handle(TodoListCommands.CompleteTodoItem command)
@@ -73,7 +73,7 @@ public class TodoListAggregateRoot :
         var toBeCompleted = TodoItems.SingleOrDefault(x => x.ItemNumber == command.ItemNumber) 
                             ?? throw new DomainException("Todo item does not exist in the todo list.");
         
-        AddEvent(new TodoListEvents.TodoItemCompleted(this, toBeCompleted.ItemNumber));
+        RaiseEvent(new TodoListEvents.TodoItemCompleted(this, toBeCompleted.ItemNumber));
     }
 
     public void Handle(TodoListEvents.TodoListCreated domainEvent)
