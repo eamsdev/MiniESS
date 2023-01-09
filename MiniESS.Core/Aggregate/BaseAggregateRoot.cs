@@ -18,17 +18,15 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     
     public void ClearEvents() => _eventsQueue.Clear();
 
-    protected void AddEvent(IDomainEvent @event)
+    protected void RaiseEvent(IDomainEvent @event)
     {
         _eventsQueue.Enqueue(@event);
-    
-        Apply(@event);
+        
+        ApplyEvent(this, @event);
         
         Version++;
     }
 
-    protected abstract void Apply(IDomainEvent @event);
-   
     /*
      *  Static constructor via reflection to allow subclasses to be created generically
      */
@@ -38,14 +36,17 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     {
         CTor = typeof(TAggregateRoot).GetConstructor(
             BindingFlags.Instance | BindingFlags.NonPublic, 
-            null, 
-            new []{ typeof(Guid) }, 
-            null);
+            null, new []{ typeof(Guid) }, null);
         
         if (null == CTor)
             throw new InvalidOperationException($"Unable to find required private constructor with param of type '{typeof(Guid)}', for Aggregate of type '{typeof(TAggregateRoot)}'");
     }
-        
+
+    public static TAggregateRoot Create(Guid key)
+    {
+        return (TAggregateRoot) CTor.Invoke(new object [] { key });
+    }
+
     public static TAggregateRoot Create(Guid key, IEnumerable<IDomainEvent> events)
     {
         var domainEvents = events as IDomainEvent[] ?? events.ToArray();
@@ -57,11 +58,20 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
         {
             foreach (var @event in domainEvents)
             {
-                baseAggregate.AddEvent(@event);
+                ApplyEvent(baseAggregate, @event);
+                baseAggregate.Version++;
             }
         }
         
         result.ClearEvents();
         return result;
     }
+
+    private static void ApplyEvent(
+        IEntity aggregate, 
+        IDomainEvent @event) 
+    => typeof(IHandleEvent<>)
+        .MakeGenericType(@event.GetType())
+        .GetMethod(nameof(IHandleEvent<IDomainEvent>.Handle))!
+        .Invoke(aggregate, new []{ @event });
 }

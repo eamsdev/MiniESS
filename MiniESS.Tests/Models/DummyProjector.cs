@@ -16,7 +16,7 @@ public class DummyProjector :
 
     public async Task ProjectEvent(DummyEvents.IncrementCounter domainEvent, CancellationToken token)
     {
-        var dummy = await Repository<DummyReadModel>().FindAsync(new object?[] { domainEvent.AggregateId }, cancellationToken: token);
+        var dummy = await Repository<DummyReadModel>().FindAsync(new object?[] { domainEvent.StreamId }, cancellationToken: token);
         dummy!.Count++;
         await SaveChangesAsync();
     }
@@ -25,7 +25,7 @@ public class DummyProjector :
     {
         var dummy = new DummyReadModel
         {
-            StreamId = domainEvent.AggregateId
+            StreamId = domainEvent.StreamId
         };
 
         await Repository<DummyReadModel>().AddAsync(dummy, token);

@@ -1,6 +1,4 @@
 namespace MiniESS.Core.Aggregate;
 
-public interface IEntity
-{
-    public Guid StreamId { get; }
-}
+public interface IEntity : IEntityCorrelation
+{ }

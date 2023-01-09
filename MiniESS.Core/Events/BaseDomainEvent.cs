@@ -13,11 +13,11 @@ public abstract record BaseDomainEvent<TAggregateRoot> : IDomainEvent
             throw new ArgumentNullException(nameof(aggregateRoot));
 
         AggregateVersion = aggregateRoot.Version;
-        AggregateId = aggregateRoot.StreamId;
+        StreamId = aggregateRoot.StreamId;
         RaisedTime = DateTime.UtcNow;
     }
 
     public long AggregateVersion { get; init; }
-    public Guid AggregateId { get; init; }
+    public Guid StreamId { get; init; }
     public DateTime RaisedTime { get; init; }
 }

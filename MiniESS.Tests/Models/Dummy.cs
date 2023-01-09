@@ -1,47 +1,90 @@
 using System;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Core.Events;
 
 namespace MiniESS.Subscription.Tests.Models;
 
-public class Dummy : BaseAggregateRoot<Dummy>
+public class CreateDummy : BaseCommand<Dummy>
+{
+    public CreateDummy(Guid streamId) : base(streamId)
+    { }
+}
+
+public class SetDummyFlag : BaseCommand<Dummy>
+{
+    public SetDummyFlag(Guid streamId, bool flag) : base(streamId)
+    {
+        Flag = flag;
+    }
+    
+    public bool Flag { get; }
+}
+
+public class IncrementDummyCount : BaseCommand<Dummy>
+{   public IncrementDummyCount(Guid streamId) : base(streamId)
+    { }
+    
+}
+
+public class Dummy : 
+    BaseAggregateRoot<Dummy>,
+    IHandleCommand<CreateDummy>,
+    IHandleCommand<SetDummyFlag>,
+    IHandleCommand<IncrementDummyCount>,
+    IHandleEvent<DummyEvents.DummyCreated>,
+    IHandleEvent<DummyEvents.IncrementCounter>,
+    IHandleEvent<DummyEvents.SetFlag>
 {
     public bool Flag { get; set; }
     public int Count { get; set; }
 
     private Dummy(Guid streamId) : base(streamId)
     {
-        AddEvent(new DummyEvents.DummyCreated(this));
+        RaiseEvent(new DummyEvents.DummyCreated(this));
     }
 
     public void SetFlag(bool flag)
     {
-        AddEvent(new DummyEvents.SetFlag(this, flag)); 
+        RaiseEvent(new DummyEvents.SetFlag(this, flag)); 
     }
 
     public void IncrementCount()
     {
-        AddEvent(new DummyEvents.IncrementCounter(this)); 
-    }
-
-    protected override void Apply(IDomainEvent @event)
-    {
-        switch (@event)
-        {
-            case DummyEvents.DummyCreated dc:
-                break;
-            case DummyEvents.IncrementCounter ic:
-                Count++;
-                break;
-            case DummyEvents.SetFlag sf:
-                Flag = sf.Flag;
-                break;
-        }
+        RaiseEvent(new DummyEvents.IncrementCounter(this)); 
     }
 
     public static Dummy Create(Guid streamId)
     {
         return new Dummy(streamId);
+    }
+
+    public void Handle(CreateDummy command)
+    {
+        RaiseEvent(new DummyEvents.DummyCreated(this));
+    }
+
+    public void Handle(SetDummyFlag command)
+    {
+        RaiseEvent(new DummyEvents.SetFlag(this, command.Flag)); 
+    }
+
+    public void Handle(IncrementDummyCount command)
+    {
+        RaiseEvent(new DummyEvents.IncrementCounter(this)); 
+    }
+
+    public void Handle(DummyEvents.DummyCreated domainEvent)
+    {}
+
+    public void Handle(DummyEvents.IncrementCounter domainEvent)
+    {
+        Count++;
+    }
+
+    public void Handle(DummyEvents.SetFlag domainEvent)
+    {
+        Flag = domainEvent.Flag;
     }
 }
 

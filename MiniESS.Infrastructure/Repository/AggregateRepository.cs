@@ -21,7 +21,7 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
         _streamBaseName = typeof(TAggregateRoot).Name;
     }
     
-    public async Task<IWriteResult?> PersistAsync(TAggregateRoot aggregateRoot, CancellationToken token)
+    public async Task<ulong?> PersistAsync(TAggregateRoot aggregateRoot, CancellationToken token)
     {
         if (aggregateRoot is null)
             throw new ArgumentNullException(nameof(aggregateRoot));
@@ -30,20 +30,22 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
             return null;
 
         var expectedRevision = StreamRevision.FromInt64(aggregateRoot.Events.First().AggregateVersion - 1);
-        return await _client.AppendToStreamAsync(
-            GetStreamName(aggregateRoot.StreamId), 
+        var writeResult = await _client.AppendToStreamAsync(
+            GetStreamName(aggregateRoot.StreamId),
             expectedRevision,
-            aggregateRoot.Events.Select(SerializationHelper.Map), 
+            aggregateRoot.Events.Select(SerializationHelper.Map),
             cancellationToken: token);
+        
+        return writeResult.LogPosition.CommitPosition;
     }
 
     public async Task PersistAsyncAndAwaitProjection(TAggregateRoot aggregateRoot, CancellationToken token)
     {
-        var persistResult = await PersistAsync(aggregateRoot, token);
-        if (persistResult is null)
+        var commitPosition = await PersistAsync(aggregateRoot, token);
+        if (commitPosition is null)
             return;
 
-        var streamCommitPositionToAwait = persistResult.LogPosition.CommitPosition;
+        var streamCommitPositionToAwait = commitPosition.Value;
         var foundStreamRevision = (ulong) 0;
 
         while (foundStreamRevision < streamCommitPositionToAwait)
@@ -73,8 +75,6 @@ public class AggregateRepository<TAggregateRoot> : IAggregateRepository<TAggrega
         }
     }
     
-    
-
     private string GetStreamName(Guid aggregateKey)
         => $"{_streamBaseName}_{aggregateKey}";
     

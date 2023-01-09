@@ -11,6 +11,7 @@ using MiniESS.Todo.Todo.ReadModels;
 
 namespace MiniESS.Todo.Tests.Utils;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)

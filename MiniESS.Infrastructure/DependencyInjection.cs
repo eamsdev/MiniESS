@@ -3,6 +3,7 @@ using EventStore.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MiniESS.Core.Aggregate;
+using MiniESS.Core.Commands;
 using MiniESS.Core.Projections;
 using MiniESS.Core.Serialization;
 using MiniESS.Infrastructure.Repository;
@@ -22,6 +23,7 @@ public static class DependencyInjection
       return services
          .AddTransient(_ => new EventSerializer(config.SerializableAssemblies))
          .AddTransient<EventStoreDbSerializer>()
+         .AddTransient<CommandProcessor>()
          .AddSingleton(_ => new EventStoreClient(EventStoreClientSettings.Create(config.ConnectionString)))
          .AddTransient<IEventStoreClient, EventStoreClientAdaptor>();
    }
