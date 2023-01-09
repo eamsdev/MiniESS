@@ -20,7 +20,7 @@ public class TodoListProjector :
     {
         var todoList = new TodoList
         {
-            Id = domainEvent.AggregateId,
+            Id = domainEvent.StreamId,
             Title = domainEvent.Title,
             TodoItems = new List<TodoItem>()
         };
@@ -31,9 +31,9 @@ public class TodoListProjector :
 
     public async Task ProjectEvent(TodoListEvents.TodoItemAdded domainEvent, CancellationToken token)
     {
-        var todoList = await Repository<TodoList>().FindAsync(new object?[] { domainEvent.AggregateId }, cancellationToken: token);
+        var todoList = await Repository<TodoList>().FindAsync(new object?[] { domainEvent.StreamId }, cancellationToken: token);
         if (todoList is null)
-            throw new NotFoundException($"todoList with aggregate id {domainEvent.AggregateId} is not found");
+            throw new NotFoundException($"todoList with aggregate id {domainEvent.StreamId} is not found");
             
         var todoItem = new TodoItem
         {
@@ -51,17 +51,17 @@ public class TodoListProjector :
     {
         var todoList = await Repository<TodoList>()
             .Include(x => x.TodoItems)
-            .Where(x => x.Id == domainEvent.AggregateId)
+            .Where(x => x.Id == domainEvent.StreamId)
             .SingleOrDefaultAsync(cancellationToken: token);
         
         if (todoList is null)
-            throw new NotFoundException($"todoList with aggregate id {domainEvent.AggregateId} is not found");
+            throw new NotFoundException($"todoList with aggregate id {domainEvent.StreamId} is not found");
         
         var todoItem = todoList.TodoItems.SingleOrDefault(x =>
-            x.TodoListId == domainEvent.AggregateId && x.ItemNumber == domainEvent.ItemNumber);
+            x.TodoListId == domainEvent.StreamId && x.ItemNumber == domainEvent.ItemNumber);
         
         if (todoItem is null)
-            throw new NotFoundException($"todoItem with todoList foreign key id {domainEvent.AggregateId} is not found");
+            throw new NotFoundException($"todoItem with todoList foreign key id {domainEvent.StreamId} is not found");
 
         todoItem.IsComplete = true;
         await SaveChangesAsync();

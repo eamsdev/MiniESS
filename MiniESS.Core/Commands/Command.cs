@@ -5,19 +5,19 @@ namespace MiniESS.Core.Commands;
 public abstract class BaseCommand<TAggregateRoot> 
     : ICommand<TAggregateRoot> where TAggregateRoot : class, IAggregateRoot
 {
-    protected BaseCommand(Guid aggregateId)
+    protected BaseCommand(Guid streamId)
     {
-        AggregateId = aggregateId;
+        StreamId = streamId;
     }
     
-    public Guid AggregateId { get; init; }
+    public Guid StreamId { get; init; }
 }
 
 public interface ICommand<TAggregateRoot> : ICommand 
     where TAggregateRoot : class, IAggregateRoot
 { }
 
-public interface ICommand
+
+public interface ICommand : IEntityCorrelation
 { 
-    public Guid AggregateId { get; init; }
 }

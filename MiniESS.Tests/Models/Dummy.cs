@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Commands;
 using MiniESS.Core.Events;
@@ -8,13 +7,13 @@ namespace MiniESS.Subscription.Tests.Models;
 
 public class CreateDummy : BaseCommand<Dummy>
 {
-    public CreateDummy(Guid aggregateId) : base(aggregateId)
+    public CreateDummy(Guid streamId) : base(streamId)
     { }
 }
 
 public class SetDummyFlag : BaseCommand<Dummy>
 {
-    public SetDummyFlag(Guid aggregateId, bool flag) : base(aggregateId)
+    public SetDummyFlag(Guid streamId, bool flag) : base(streamId)
     {
         Flag = flag;
     }
@@ -23,7 +22,7 @@ public class SetDummyFlag : BaseCommand<Dummy>
 }
 
 public class IncrementDummyCount : BaseCommand<Dummy>
-{   public IncrementDummyCount(Guid aggregateId) : base(aggregateId)
+{   public IncrementDummyCount(Guid streamId) : base(streamId)
     { }
     
 }

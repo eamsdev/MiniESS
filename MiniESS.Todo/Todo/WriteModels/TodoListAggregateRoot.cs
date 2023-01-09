@@ -9,7 +9,7 @@ public static class TodoListCommands
 {
     public class Create : BaseCommand<TodoListAggregateRoot>
     {
-        public Create(Guid aggregateId, string title) : base(aggregateId)
+        public Create(Guid streamId, string title) : base(streamId)
         {
             Title = title;
         }
@@ -19,7 +19,7 @@ public static class TodoListCommands
     
     public class AddTodoItem : BaseCommand<TodoListAggregateRoot>
     {
-        public AddTodoItem(Guid aggregateId, string description) : base(aggregateId)
+        public AddTodoItem(Guid streamId, string description) : base(streamId)
         {
             Description = description;
         }
@@ -29,7 +29,7 @@ public static class TodoListCommands
     
     public class CompleteTodoItem : BaseCommand<TodoListAggregateRoot>
     {
-        public CompleteTodoItem(Guid aggregateId, int itemNumber) : base(aggregateId)
+        public CompleteTodoItem(Guid streamId, int itemNumber) : base(streamId)
         {
             ItemNumber = itemNumber;
         }

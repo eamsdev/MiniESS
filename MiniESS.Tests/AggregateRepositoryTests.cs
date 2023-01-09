@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MiniESS.Core.Aggregate;
 using MiniESS.Core.Commands;
 using MiniESS.Infrastructure;
-using MiniESS.Infrastructure.Repository;
 using MiniESS.Subscription.Tests.Extensions;
 using MiniESS.Subscription.Tests.Models;
 using Xunit;
