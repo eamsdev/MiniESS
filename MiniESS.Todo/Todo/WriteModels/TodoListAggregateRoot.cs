@@ -5,6 +5,64 @@ using MiniESS.Todo.Exceptions;
 
 namespace MiniESS.Todo.Todo.WriteModels;
 
+public class TodoListAggregateRoot : 
+    BaseAggregateRoot<TodoListAggregateRoot>,
+    IHandleCommand<TodoListCommands.Create>,
+    IHandleCommand<TodoListCommands.AddTodoItem>,
+    IHandleCommand<TodoListCommands.CompleteTodoItem>,
+    IHandleEvent<TodoListEvents.Created>,
+    IHandleEvent<TodoListEvents.Added>,
+    IHandleEvent<TodoListEvents.CompletedTodoItem>
+{
+    private TodoListAggregateRoot(Guid streamId) : base(streamId)
+    { }
+
+    public string Title { get; set; }
+
+    public List<TodoItemAggregate> TodoItems { get; set; }
+
+    public void Handle(TodoListCommands.Create command)
+    {
+        if (command.Title.Length == 0)
+            throw new DomainException("Title cannot be null or empty for a Todo List");
+        
+        RaiseEvent(new TodoListEvents.Created(this, command.Title));
+    }
+
+    public void Handle(TodoListCommands.AddTodoItem command)
+    {
+        RaiseEvent(new TodoListEvents.Added(this, TodoItems.Count, command.Description));
+    }
+
+    public void Handle(TodoListCommands.CompleteTodoItem command)
+    {
+        var toBeCompleted = TodoItems.SingleOrDefault(x => x.ItemNumber == command.ItemNumber) 
+                            ?? throw new DomainException("Todo item does not exist in the todo list.");
+        
+        RaiseEvent(new TodoListEvents.CompletedTodoItem(this, toBeCompleted.ItemNumber));
+    }
+
+    public void Handle(TodoListEvents.Created domainEvent)
+    {
+        Title = domainEvent.Title;
+        TodoItems = new List<TodoItemAggregate>();
+    }
+
+    public void Handle(TodoListEvents.Added domainEvent)
+    {
+        TodoItems.Add(TodoItemAggregate.Create(
+                    domainEvent.ItemNumber, 
+                    domainEvent.Description));
+    }
+
+    public void Handle(TodoListEvents.CompletedTodoItem domainEvent)
+    {
+        TodoItems
+            .Single(x => x.ItemNumber == domainEvent.ItemNumber)
+            .Complete();
+    }
+}
+
 public static class TodoListCommands
 {
     public class Create : BaseCommand<TodoListAggregateRoot>
@@ -38,100 +96,42 @@ public static class TodoListCommands
     }
 }
 
-public class TodoListAggregateRoot : 
-    BaseAggregateRoot<TodoListAggregateRoot>,
-    IHandleCommand<TodoListCommands.Create>,
-    IHandleCommand<TodoListCommands.AddTodoItem>,
-    IHandleCommand<TodoListCommands.CompleteTodoItem>,
-    IHandleEvent<TodoListEvents.TodoListCreated>,
-    IHandleEvent<TodoListEvents.TodoItemAdded>,
-    IHandleEvent<TodoListEvents.TodoItemCompleted>
-{
-    private TodoListAggregateRoot(Guid streamId) : base(streamId)
-    { }
-
-    public string Title { get; set; }
-
-    public List<TodoItemAggregate> TodoItems { get; set; }
-
-    public void Handle(TodoListCommands.Create command)
-    {
-        if (command.Title.Length == 0)
-            throw new DomainException("Title cannot be null or empty for a Todo List");
-        
-        
-        RaiseEvent(new TodoListEvents.TodoListCreated(this, command.Title));
-    }
-
-    public void Handle(TodoListCommands.AddTodoItem command)
-    {
-        RaiseEvent(new TodoListEvents.TodoItemAdded(this, TodoItems.Count, command.Description));
-    }
-
-    public void Handle(TodoListCommands.CompleteTodoItem command)
-    {
-        var toBeCompleted = TodoItems.SingleOrDefault(x => x.ItemNumber == command.ItemNumber) 
-                            ?? throw new DomainException("Todo item does not exist in the todo list.");
-        
-        RaiseEvent(new TodoListEvents.TodoItemCompleted(this, toBeCompleted.ItemNumber));
-    }
-
-    public void Handle(TodoListEvents.TodoListCreated domainEvent)
-    {
-        Title = domainEvent.Title;
-        TodoItems = new List<TodoItemAggregate>();
-    }
-
-    public void Handle(TodoListEvents.TodoItemAdded domainEvent)
-    {
-        TodoItems.Add(TodoItemAggregate.Create(
-                    domainEvent.ItemNumber, 
-                    domainEvent.Description));
-    }
-
-    public void Handle(TodoListEvents.TodoItemCompleted domainEvent)
-    {
-        TodoItems
-            .Single(x => x.ItemNumber == domainEvent.ItemNumber)
-            .Complete();
-    }
-}
 
 public static class TodoListEvents
 {
-    public record TodoListCreated : BaseDomainEvent<TodoListAggregateRoot>
+    public record Created : BaseDomainEvent<TodoListAggregateRoot>
     {
         public string Title { get; set; } // TODO: Add support for de-serialization without setter 
 
-        private TodoListCreated() { }
+        private Created() { }
 
-        public TodoListCreated(TodoListAggregateRoot todoListAggregateRoot, string title) : base(todoListAggregateRoot)
+        public Created(TodoListAggregateRoot todoListAggregateRoot, string title) : base(todoListAggregateRoot)
         {
             Title = title;
         }
     }
 
-    public record TodoItemAdded : BaseDomainEvent<TodoListAggregateRoot>
+    public record Added : BaseDomainEvent<TodoListAggregateRoot>
     {
         public int ItemNumber { get; set; }
         public string Description { get; set; }
 
-        private TodoItemAdded() { }
+        private Added() { }
 
-        public TodoItemAdded(TodoListAggregateRoot todoList, int itemNumber, string description) : base(todoList)
+        public Added(TodoListAggregateRoot todoList, int itemNumber, string description) : base(todoList)
         {
             ItemNumber = itemNumber;
             Description = description;
         }
     }
     
-    public record TodoItemCompleted : BaseDomainEvent<TodoListAggregateRoot>
+    public record CompletedTodoItem : BaseDomainEvent<TodoListAggregateRoot>
     {
         public int ItemNumber { get; set; }
 
-        private TodoItemCompleted() { }
+        private CompletedTodoItem() { }
 
-        public TodoItemCompleted(TodoListAggregateRoot todoList, int itemNumber) : base(todoList)
+        public CompletedTodoItem(TodoListAggregateRoot todoList, int itemNumber) : base(todoList)
         {
             ItemNumber = itemNumber;
         }

@@ -8,15 +8,15 @@ namespace MiniESS.Todo.Todo.ReadModels;
 
 public class TodoListProjector :
     ProjectorBase<TodoListAggregateRoot>,
-    IProject<TodoListEvents.TodoListCreated>,
-    IProject<TodoListEvents.TodoItemAdded>,
-    IProject<TodoListEvents.TodoItemCompleted>
+    IProject<TodoListEvents.Created>,
+    IProject<TodoListEvents.Added>,
+    IProject<TodoListEvents.CompletedTodoItem>
 {
     public TodoListProjector(TodoDbContext context) : base(context)
     {
     }
 
-    public async Task ProjectEvent(TodoListEvents.TodoListCreated domainEvent, CancellationToken token)
+    public async Task ProjectEvent(TodoListEvents.Created domainEvent, CancellationToken token)
     {
         var todoList = new TodoList
         {
@@ -29,7 +29,7 @@ public class TodoListProjector :
         await SaveChangesAsync();
     }
 
-    public async Task ProjectEvent(TodoListEvents.TodoItemAdded domainEvent, CancellationToken token)
+    public async Task ProjectEvent(TodoListEvents.Added domainEvent, CancellationToken token)
     {
         var todoList = await Repository<TodoList>().FindAsync(new object?[] { domainEvent.StreamId }, cancellationToken: token);
         if (todoList is null)
@@ -47,7 +47,7 @@ public class TodoListProjector :
         await SaveChangesAsync();
     }
 
-    public async Task ProjectEvent(TodoListEvents.TodoItemCompleted domainEvent, CancellationToken token)
+    public async Task ProjectEvent(TodoListEvents.CompletedTodoItem domainEvent, CancellationToken token)
     {
         var todoList = await Repository<TodoList>()
             .Include(x => x.TodoItems)
