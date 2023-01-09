@@ -21,7 +21,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
     protected void AddEvent(IDomainEvent @event)
     {
         _eventsQueue.Enqueue(@event);
-    
+        
         ApplyEvent(this, @event);
         
         Version++;
@@ -61,6 +61,7 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
             foreach (var @event in domainEvents)
             {
                 ApplyEvent(baseAggregate, @event);
+                baseAggregate.Version++;
             }
         }
         
@@ -68,11 +69,12 @@ public abstract class BaseAggregateRoot<TAggregateRoot> : BaseEntity, IAggregate
         return result;
     }
 
-    private static void ApplyEvent(object aggregate, IDomainEvent @event)
-    {
-        var eventHandlerType = typeof(IHandleEvent<>)
-            .MakeGenericType(@event.GetType());
-        var method = eventHandlerType.GetMethod(nameof(IHandleEvent<IDomainEvent>.Handle));
-        method.Invoke(aggregate, new []{ @event });
-    }
+    private static void ApplyEvent(
+        IEntity aggregate, 
+        IDomainEvent @event) 
+    => typeof(IHandleEvent<>)
+        .MakeGenericType(@event.GetType())
+        .GetMethod(nameof(IHandleEvent<IDomainEvent>.Handle))!
+        .Invoke(aggregate, new []{ @event });
+    
 }
